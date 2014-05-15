@@ -6,13 +6,18 @@
 
 package chatbot;
 
+import org.jibble.pircbot.User;
+import org.jibble.pircbot.*;
+
+import java.util.ArrayList;
+
 /**
  *
  * @author JJ
  */
 public class Commands {
     
-    public String getResponse(String channel, String sender, String login, String hostname, String message) {
+    public String getResponse(String channel, String sender, String login, String hostname, String message, ArrayList<String> mods) {
         String response = "";
         
         switch(message){
@@ -22,8 +27,15 @@ public class Commands {
             case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
-                String user = "";
-                response = permitUser(user);
+                String hmm =
+                System.out.println(mods);
+                if(mods.contains(sender)){
+                    response = sender + " may permit user";
+                }
+                else
+                response = sender + " may not permit user";
+                //String user = "";
+                //response = permitUser(user);
                 break;
             case "!music":
                 response = playlist();

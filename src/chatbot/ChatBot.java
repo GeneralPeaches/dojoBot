@@ -7,6 +7,7 @@
 package chatbot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jibble.pircbot.*;
@@ -47,14 +48,33 @@ public class ChatBot extends PircBot{
         //join the #pircbot channel
         bot.joinChannel("#slastic");
 
+
+
         //oauth:pd3g6anottot44kbh5jn5jcz5lgnuja
     }
     
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String response = commands.getResponse(channel, sender, login, hostname, message);
+        //System.out.println(sender);
+        ArrayList<String> mods = mods(channel);
+        String response = commands.getResponse(channel, sender, login, hostname, message, mods);
        
         sendMessage(channel, response);
     }
-    
+
+    public ArrayList<String> mods(String channel){
+        User[] users = getUsers(channel);
+
+
+        ArrayList<String> mods = new ArrayList<String>();
+        for(User i : users){
+            System.out.println(i.toString());
+            //System.out.println(i.getPrefix());
+            if(i.isOp()){
+                mods.add(i.getNick());
+            }
+        }
+        return mods;
+
+    }
     //TODO: Various other commands
 }
