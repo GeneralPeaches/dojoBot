@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jibble.pircbot.*;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 

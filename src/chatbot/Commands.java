@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.*;
 
 /**
  *
