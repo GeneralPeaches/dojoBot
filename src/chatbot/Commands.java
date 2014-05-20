@@ -6,11 +6,17 @@
 
 package chatbot;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.*;
+
 /**
  *
  * @author JJ
  */
-public class Commands {
+public class Commands extends ListenerAdapter{
     
     public String getResponse(String channel, String sender, String login, String hostname, String message) {
         String response = "";
