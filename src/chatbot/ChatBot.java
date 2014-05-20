@@ -38,7 +38,7 @@ public class ChatBot extends PircBot{
         bot.setVerbose(true);
         try {
             //connect to the IRC server
-            bot.connect("irc.twitch.tv", 6667,"oauth:pd3g6anottot44kbh5jn5jcz5lgnuja" );
+            bot.connect("irc.twitch.tv", 6667,"PLACEHOLDER" );
         } catch (IOException ex) {
             Logger.getLogger(ChatBot.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IrcException ex) {
@@ -50,7 +50,6 @@ public class ChatBot extends PircBot{
 
 
 
-        //oauth:pd3g6anottot44kbh5jn5jcz5lgnuja
     }
     
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
