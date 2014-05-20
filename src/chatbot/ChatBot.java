@@ -7,8 +7,10 @@
 package chatbot;
 
 import java.io.IOException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jibble.pircbot.*;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 
@@ -29,7 +31,6 @@ public class ChatBot extends PircBotX{
         // TODO code application logic here
         //I want to have the bot join the appropriate channel
         //immediately when run, but I don't think that's feasible.
-        //creates bot
        
         //creates the configuration for the bot to use
         Configuration configuration = new Configuration.Builder()
@@ -51,15 +52,17 @@ public class ChatBot extends PircBotX{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
     }
     
     /*
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         String response = commands.getResponse(channel, sender, login, hostname, message);
-       
+
+        sendMessage(channel, response);
         //sendMessage(channel, response);
     }
+    
     //*/
     //TODO: Various other commands
 }

@@ -6,9 +6,12 @@
 
 package chatbot;
 
+
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 
@@ -18,7 +21,7 @@ import org.pircbotx.*;
  */
 public class Commands extends ListenerAdapter{
     
-    public String getResponse(String channel, String sender, String login, String hostname, String message) {
+    public String getResponse(String channel, String sender, String login, String hostname, String message, ArrayList<String> mods) {
         String response = "";
         
         switch(message){
@@ -28,8 +31,15 @@ public class Commands extends ListenerAdapter{
             case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
-                String user = "";
-                response = permitUser(user);
+                String hmm = "";
+                System.out.println(mods);
+                if(mods.contains(sender)){
+                    response = sender + " may permit user";
+                }
+                else
+                response = sender + " may not permit user";
+                //String user = "";
+                //response = permitUser(user);
                 break;
             case "!music":
                 response = playlist();
