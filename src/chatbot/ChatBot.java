@@ -50,7 +50,7 @@ public class ChatBot extends PircBot{
 
 
 
-        //oauth:pd3g6anottot44kbh5jn5jcz5lgnuja
+        
     }
     
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
