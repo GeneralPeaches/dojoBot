@@ -9,18 +9,62 @@ package chatbot;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+
+import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
+
+
 
 /**
  *
  * @author JJ
  */
 public class Commands extends ListenerAdapter{
+
+    public void onMessage(MessageEvent message){
+        String newMessage = message.getMessage();
+        String response = "";
+
+        String[] messageArray = newMessage.split(" ");
+
+
+        switch(messageArray[0]){
+            case "!time":
+                if(messageArray.length == 1)
+                    response = time(message.getUser().getNick());
+                message.respond(response);
+                break;
+            case "!permit":
+                //need to check if the person who send the message
+                //is a mod, then if so permit the user.
+                //System.out.println(mods);
+                ArrayList<String> mods = new ArrayList<String>();
+                mods.add("slastic");
+                if(mods.contains(message.getUser().getNick().toLowerCase())){
+                    message.respond(messageArray[1] + " may post a link");
+                    //response = sender + " may permit user";
+                }
+                //else
+                   // response = sender + " may not permit user";
+                //String user = "";
+                //response = permitUser(user);
+                break;
+            case "!music":
+                if(messageArray.length == 1)
+                    message.respond("the playlist is ...");
+                //response = playlist();
+                break;
+            default:
+                break;
+        }
+    }
     
-    public String getResponse(String channel, String sender, String login, String hostname, String message, ArrayList<String> mods) {
+    /*public String getResponse(String channel, String sender, String login, String hostname, String message, ArrayList<String> mods) {
         String response = "";
         
         switch(message){
@@ -52,7 +96,7 @@ public class Commands extends ListenerAdapter{
         }
         return response;
     }
-    
+    */
     //post the time in the chat (basically a useless function
     private String time(String sender){
         String time = new java.util.Date().toString();
