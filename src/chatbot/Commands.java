@@ -27,7 +27,7 @@ public class Commands {
             case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
-                String hmm =
+                //String hmm =
                 System.out.println(mods);
                 if(mods.contains(sender)){
                     response = sender + " may permit user";
