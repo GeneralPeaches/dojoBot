@@ -8,8 +8,8 @@ package chatbot;
 
 import java.io.IOException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 
@@ -33,13 +33,13 @@ public class ChatBot extends PircBotX{
        
         //creates the configuration for the bot to use
         Configuration configuration = new Configuration.Builder()
-            .setName("dojobot") //Set the nick of the bot. CHANGE IN YOUR CODE
+            .setName("dojobot") //Set the nick of the bot.
             .setLogin("LQ") //login part of hostmask, eg name:login@host
             .setAutoNickChange(false) //Automatically change nick when the current one is in use
-            .setCapEnabled(true) //Enable CAP features
+            .setCapEnabled(false) //Enable CAP features
             .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
-            .setServer("irc.twitch.tv", 6667, "oauth:PLACEHOLDER")
-            .addAutoJoinChannel("slastic") //Join the slastic channel
+            .setServer("irc.twitch.tv", 6667, "PLACEHOLDER")
+            .addAutoJoinChannel("#slastic") //Join the slastic channel
             .buildConfiguration();
         
         //creates the bot
@@ -53,15 +53,4 @@ public class ChatBot extends PircBotX{
         }
         
     }
-    
-    /*
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String response = commands.getResponse(channel, sender, login, hostname, message);
-
-        sendMessage(channel, response);
-        //sendMessage(channel, response);
-    }
-    
-    //*/
-    //TODO: Various other commands
 }

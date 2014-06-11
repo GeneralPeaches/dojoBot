@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.*;
+import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
@@ -30,8 +32,8 @@ public class Commands extends ListenerAdapter{
             case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
-                String hmm = "";
-                System.out.println(mods);
+                //String hmm = "";
+                //System.out.println(mods);
                 if(mods.contains(sender)){
                     response = sender + " may permit user";
                 }
@@ -51,6 +53,28 @@ public class Commands extends ListenerAdapter{
             response = time(sender);
         }
         return response;
+    }
+    
+    //bot's behavior for messages
+    public void onMessage(MessageEvent event){
+        String response = getResponse(event);
+    }
+    
+    //getResponse implementation for MessageEvent objects
+    public String getResponse(MessageEvent event){
+        User user = event.getUser();
+        String message = event.getMessage();
+        Channel channel = event.getChannel();
+        
+        
+        switch(message){
+            case "!permit":
+                break;
+            default:
+                break;
+        }
+        
+        return "";
     }
     
     //post the time in the chat (basically a useless function
