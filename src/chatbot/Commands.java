@@ -26,12 +26,31 @@ import org.pircbotx.hooks.events.MessageEvent;
  * @author JJ
  */
 public class Commands extends ListenerAdapter{
+    
+    /**
+     * So in addition to hard coded commands I'm thinking of adding
+     * in a Map<String, String> for custom commands that will be
+     * saved to a txt file or something when shutting down.
+     * This is obviously a stretch goal kind of thing though.
+     */
 
+    /**
+     * We'll be using these two lines for all commands.
+     * The first one is for general messages
+     * The second is for things we want in Dojobot's text color
+     * 
+     * Tell user: event.getChannel().send().message("");
+     * 
+     * Tell channel: event.getChannel().send().action("");
+     */
+    
     //bot's behavior for messages
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response = "";
 
+        message.getChannel().send().message("Test message");
+        
         String[] messageArray = newMessage.split(" ");
 
 
@@ -65,40 +84,6 @@ public class Commands extends ListenerAdapter{
                 break;
         }
     }
-    
-    /*public String getResponse(String channel, String sender, String login, String hostname, String message, ArrayList<String> mods) {
-        String response = "";
-        
-        switch(message){
-            case "!time":
-                response = time(sender);
-                break;
-            case "!permit":
-                //need to check if the person who send the message
-                //is a mod, then if so permit the user.
-                //String hmm = "";
-                //System.out.println(mods);
-                if(mods.contains(sender)){
-                    response = sender + " may permit user";
-                }
-                else
-                response = sender + " may not permit user";
-                //String user = "";
-                //response = permitUser(user);
-                break;
-            case "!music":
-                response = playlist();
-                break;
-            default:
-                break;
-        }
-        
-        if(message.equalsIgnoreCase("!time")){
-            response = time(sender);
-        }
-        return response;
-    }
-    */
     
     //getResponse implementation for MessageEvent objects
     public String getResponse(MessageEvent event){
