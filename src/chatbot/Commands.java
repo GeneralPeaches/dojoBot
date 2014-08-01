@@ -32,6 +32,10 @@ public class Commands extends ListenerAdapter{
      * in a Map<String, String> for custom commands that will be
      * saved to a txt file or something when shutting down.
      * This is obviously a stretch goal kind of thing though.
+     * 
+     * Also a custom constructor that takes the channel name as a
+     * parameter in order to load the appropriate custom commands
+     * for that channel.
      */
 
     /**
