@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
+import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 
@@ -49,11 +50,13 @@ public class Commands extends ListenerAdapter{
      */
     
     //bot's behavior for messages
+
+    ArrayList<String> permitedUsers = new ArrayList<String>();
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response = "";
 
-        message.getChannel().send().message("Test message");
+       // message.getChannel().send().message("Test message");
         
         String[] messageArray = newMessage.split(" ");
 
@@ -67,17 +70,13 @@ public class Commands extends ListenerAdapter{
             case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
-                //System.out.println(mods);
-                ArrayList<String> mods = new ArrayList<String>();
-                mods.add("slastic");
-                if(mods.contains(message.getUser().getNick().toLowerCase())){
-                    message.respond(messageArray[1] + " may post a link");
-                    //response = sender + " may permit user";
-                }
-                //else
-                   // response = sender + " may not permit user";
-                //String user = "";
-                //response = permitUser(user);
+
+                if(messageArray.length == 2) {
+                    if (message.getUser().isIrcop()){
+                        message.respond(permitUser(messageArray[1]));
+                    }
+                    }
+
                 break;
             case "!music":
                 if(messageArray.length == 1)
@@ -105,24 +104,27 @@ public class Commands extends ListenerAdapter{
         
         return "";
     }
-    
+
     //post the time in the chat (basically a useless function
     private String time(String sender){
         String time = new java.util.Date().toString();
         String response = sender + ": The time is now " + time;
         return response;
     }
-    
+
     private String playlist(){
         //TODO: Implement this command
         return "";
     }
-    
+
     //the param for this should be the user to be permited
     //need to separate the username from the command and pass it in
     //easy to do, just need the time
     private String permitUser(String user){
         //TODO: Implement this commnand to allow sender to post links
-        return "";
+        //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
+       permitedUsers.add(user);
+        String response = (user + " may post a link");
+        return response;
     }
 }
