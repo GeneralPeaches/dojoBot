@@ -8,16 +8,11 @@ package chatbot;
 
 
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.ArrayList;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
-import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 
@@ -51,7 +46,7 @@ public class Commands extends ListenerAdapter{
     
     //bot's behavior for messages
 
-    ArrayList<String> permitedUsers = new ArrayList<String>();
+    ArrayList<String> permittedUsers = new ArrayList<String>();
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response = "";
@@ -108,7 +103,7 @@ public class Commands extends ListenerAdapter{
     //post the time in the chat (basically a useless function
     private String time(String sender){
         String time = new java.util.Date().toString();
-        String response = sender + ": The time is now " + time;
+        String response = "The time is now " + time;
         return response;
     }
 
@@ -123,7 +118,7 @@ public class Commands extends ListenerAdapter{
     private String permitUser(String user){
         //TODO: Implement this commnand to allow sender to post links
         //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
-       permitedUsers.add(user);
+       permittedUsers.add(user);
         String response = (user + " may post a link");
         return response;
     }

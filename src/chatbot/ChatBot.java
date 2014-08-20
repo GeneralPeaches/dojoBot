@@ -38,6 +38,7 @@ public class ChatBot extends PircBotX{
             .setAutoNickChange(false) //Automatically change nick when the current one is in use
             .setCapEnabled(false) //Enable CAP features
             .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
+            .addListener(new SpamControl())
             .setServer("irc.twitch.tv", 6667, "oauth:secret")
             .addAutoJoinChannel("#slastic") //Join the slastic channel
             .buildConfiguration();
