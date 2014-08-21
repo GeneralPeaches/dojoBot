@@ -15,7 +15,7 @@ import org.pircbotx.*;
 
 /**
  *
- * @author JJ
+ * @author General Peaches and Slastic
  */
 public class ChatBot extends PircBotX{
     

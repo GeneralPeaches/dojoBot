@@ -19,7 +19,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 /**
  *
- * @author JJ
+ * @author General Peaches and Slastic
  */
 public class Commands extends ListenerAdapter{
     
