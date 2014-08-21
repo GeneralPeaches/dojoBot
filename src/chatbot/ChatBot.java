@@ -39,7 +39,7 @@ public class ChatBot extends PircBotX{
             .setCapEnabled(false) //Enable CAP features
             .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
             .addListener(new SpamControl())
-            .setServer("irc.twitch.tv", 6667, "oauth:pd3g6anottot44kbh5jn5jcz5lgnuja")
+            .setServer("irc.twitch.tv", 6667, "oauth:secret")
             .addAutoJoinChannel("#slastic") //Join the slastic channel
             .buildConfiguration();
         
