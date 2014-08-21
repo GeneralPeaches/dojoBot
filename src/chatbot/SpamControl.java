@@ -9,14 +9,26 @@ import java.util.ArrayList;
 
 public class SpamControl extends ListenerAdapter{
     private ArrayList<String> bannablePhrases = new ArrayList<String>();
-
+    private ArrayList<String> permittedUsers = new ArrayList<String>();
+    
     public SpamControl(){
         bannablePhrases = populatePhrases();
     }
 
     public void onMessage(MessageEvent message){
         String currentMessage = message.getMessage();
-//there has to be a cleaner way to do this
+        //there has to be a cleaner way to do this
+        
+        String[] messageArray = message.getMessage().split(" ");
+        
+        if(messageArray[0].equals("!permit")){
+            if(messageArray.length == 2) {
+                    if (message.getUser().isIrcop()){
+                        //message.respond(permitUser(messageArray[1]));
+                    }
+            }
+        }
+        
         if(!message.getUser().isIrcop()){
             for(String test : bannablePhrases){
                 if(currentMessage.contains(test)){
@@ -49,5 +61,13 @@ public class SpamControl extends ListenerAdapter{
         return theList;
 
 
-           }
+    }
+    
+    private String permitUser(String user){
+        //TODO: Implement this commnand to allow sender to post links
+        //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
+        permittedUsers.add(user);
+        String response = (user + " may post a link");
+        return response;
+    }
 }

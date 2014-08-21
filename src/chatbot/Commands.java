@@ -46,7 +46,7 @@ public class Commands extends ListenerAdapter{
     
     //bot's behavior for messages
 
-    ArrayList<String> permittedUsers = new ArrayList<String>();
+    
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response = "";
@@ -62,17 +62,17 @@ public class Commands extends ListenerAdapter{
                     response = time(message.getUser().getNick());
                 message.respond(response);
                 break;
-            case "!permit":
+            /*case "!permit":
                 //need to check if the person who send the message
                 //is a mod, then if so permit the user.
 
                 if(messageArray.length == 2) {
                     if (message.getUser().isIrcop()){
-                        message.respond(permitUser(messageArray[1]));
+                        //message.respond(permitUser(messageArray[1]));
                     }
-                    }
+                }
 
-                break;
+                break;*/
             case "!music":
                 if(messageArray.length == 1)
                     message.respond("the playlist is ...");
@@ -115,11 +115,13 @@ public class Commands extends ListenerAdapter{
     //the param for this should be the user to be permited
     //need to separate the username from the command and pass it in
     //easy to do, just need the time
+    /*
     private String permitUser(String user){
         //TODO: Implement this commnand to allow sender to post links
         //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
-       permittedUsers.add(user);
+        permittedUsers.add(user);
         String response = (user + " may post a link");
         return response;
     }
+    */
 }
