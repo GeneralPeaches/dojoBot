@@ -6,10 +6,12 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Date;
 
 public class SpamControl extends ListenerAdapter{
     private ArrayList<String> bannablePhrases = new ArrayList<String>();
-    private ArrayList<String> permittedUsers = new ArrayList<String>();
+    private HashMap<String,Date> permittedUsers = new HashMap<String,Date>();
     
     public SpamControl(){
         bannablePhrases = populatePhrases();
@@ -24,7 +26,7 @@ public class SpamControl extends ListenerAdapter{
         if(messageArray[0].equals("!permit")){
             if(messageArray.length == 2) {
                     if (message.getUser().isIrcop()){
-                        //message.respond(permitUser(messageArray[1]));
+                        message.respond(permitUser(messageArray[1]));
                     }
             }
         }
@@ -32,8 +34,10 @@ public class SpamControl extends ListenerAdapter{
         if(!message.getUser().isIrcop()){
             for(String test : bannablePhrases){
                 if(currentMessage.contains(test)){
-                    purge(message);
-                    break;
+                    if(!permittedUsers.containsKey(message.getUser().getNick()) || permittedUsers.get(message.getUser().getNick()).before(new Date(System.currentTimeMillis()))){
+                        purge(message);
+                        break;
+                    }
                 }
             }
             //if(currentMessage.contains(".com")) {
@@ -66,7 +70,10 @@ public class SpamControl extends ListenerAdapter{
     private String permitUser(String user){
         //TODO: Implement this commnand to allow sender to post links
         //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
-        permittedUsers.add(user);
+        
+        Date endTime = new Date(System.currentTimeMillis() + 180000); 
+        permittedUsers.put(user, endTime);
+        
         String response = (user + " may post a link");
         return response;
     }
