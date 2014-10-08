@@ -19,19 +19,18 @@ public class SpamControl extends ListenerAdapter{
 
     public void onMessage(MessageEvent message){
         String currentMessage = message.getMessage();
-        //there has to be a cleaner way to do this
         
         String[] messageArray = message.getMessage().split(" ");
         
         if(messageArray[0].equals("!permit")){
             if(messageArray.length == 2) {
-                    if (message.getUser().isIrcop()){
-                        message.respond(permitUser(messageArray[1]));
-                    }
+                if (message.getChannel().getOps().contains(message.getUser())){
+                    message.respond(permitUser(messageArray[1]));
+                }
             }
         }
         
-        if(!message.getUser().isIrcop()){
+        if(!message.getChannel().getOps().contains(message.getUser())){
             for(String test : bannablePhrases){
                 if(currentMessage.contains(test)){
                     if(!permittedUsers.containsKey(message.getUser().getNick()) || permittedUsers.get(message.getUser().getNick()).before(new Date(System.currentTimeMillis()))){
@@ -40,9 +39,6 @@ public class SpamControl extends ListenerAdapter{
                     }
                 }
             }
-            //if(currentMessage.contains(".com")) {
-               // purge(message);
-            //}
         }
     }
 
