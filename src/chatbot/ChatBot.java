@@ -30,6 +30,8 @@ public class ChatBot extends PircBotX{
         // TODO code application logic here
         //I want to have the bot join the appropriate channel
         //immediately when run, but I don't think that's feasible.
+        
+        //String channel = "#" + channelName;
        
         //creates the configuration for the bot to use
         Configuration configuration = new Configuration.Builder()

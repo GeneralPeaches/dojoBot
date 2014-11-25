@@ -9,13 +9,12 @@ package chatbot;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 import org.pircbotx.hooks.events.MessageEvent;
-
-
 
 /**
  *
@@ -25,13 +24,15 @@ public class Commands extends ListenerAdapter{
     
     /**
      * So in addition to hard coded commands I'm thinking of adding
-     * in a Map<String, String> for custom commands that will be
-     * saved to a txt file or something when shutting down.
+     * in two Map<String, String> for custom commands (mod only and 
+     * regular users) that will be saved to a txt file or something 
+     * when shutting down.
+     * 
      * This is obviously a stretch goal kind of thing though.
      * 
      * Also a custom constructor that takes the channel name as a
      * parameter in order to load the appropriate custom commands
-     * for that channel.
+     * for that channel. (Assuming bot hosted on a server)
      */
 
     /**
@@ -43,10 +44,22 @@ public class Commands extends ListenerAdapter{
      * 
      * Tell channel: event.getChannel().send().action("");
      */
+
+    /*
+    public Commands(String channelName){
+        BufferedReader reader = new BufferedReader(new FileReader(channelName + ".txt"));
+        String line = null;
+        
+        while((line = reader.readLine()) != null){
+            
+        }
+    }
+    */
+    
+    HashMap<String, String> customComs = new HashMap<String, String>();
+    HashMap<String, String> modComs = new HashMap<String, String>();
     
     //bot's behavior for messages
-
-    
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response = "";
@@ -62,44 +75,102 @@ public class Commands extends ListenerAdapter{
                     response = time(message.getUser().getNick());
                 message.respond(response);
                 break;
-            /*case "!permit":
-                //need to check if the person who send the message
-                //is a mod, then if so permit the user.
-
-                if(messageArray.length == 2) {
-                    if (message.getUser().isIrcop()){
-                        //message.respond(permitUser(messageArray[1]));
-                    }
-                }
-
-                break;*/
             case "!music":
                 if(messageArray.length == 1)
                     message.respond("the playlist is ...");
                 //response = playlist();
                 break;
-            default:
+            case "!addcom":
+                if (message.getChannel().getOps().contains(message.getUser())){
+                    response = addCom(messageArray);
+                    message.getChannel().send().message(response);
+                }
+                else{
+                    message.respond("You are not allowed to add commands.");
+                }
                 break;
+            case "!delcom":
+                break;
+            case "!editcom":
+                break;
+            default:
+                if(message.getMessage().startsWith("!")){
+                    customCommands(message);
+                }
+                break;
+        }
+    }
+
+    //adds the command to the appropriate HashMap if properly formatted
+    /**
+     * 
+     * @param messageArray
+     * @return response based on the array's contents
+     * 
+     * Proper format for adding command:
+     * !addcom [command] [permissions] [output]
+     * [command] must start with an exclamation point
+     * [permissions] is either 'm' or 'e'
+     *   - 'm' is for mod only commands
+     *   - 'e' is for everyone
+     * [output] is the message you want the bot to put in chat
+     */    
+    private String addCom(String[] messageArray){
+        String output = "";
+        
+        //check that there are enough arguments for the command
+        if(messageArray.length < 4){
+            return("Not enough arguments.");
+        }
+        
+        //check that the second argument starts with '!'
+        if(!messageArray[1].startsWith("!")){
+            return("Commands must start with '!'");
+        }
+        
+        //check that the third argument is either "-m" or "-e"
+        if(!messageArray[2].equals("-m") && !messageArray[2].equals("-e")){
+            return("Third argument must be '-m' or '-e'");
+        }
+        
+        //build the command output from the message array
+        output += messageArray[3];
+        for (int i = 4; i < messageArray.length; i++){
+            output += " " + messageArray[i];
+        }
+        
+        if(messageArray[2].equals("-m")){
+            modComs.put(messageArray[1], output);
+        }
+        else{
+            customComs.put(messageArray[1], output);
+        }
+        
+        return ("Command added successfully!");
+    }
+    
+    //this method handles custom commands
+    private void customCommands(MessageEvent message){
+        String command = message.getMessage();
+        
+        //checks if the command is in custom mod commands
+        if(modComs.containsKey(command)){
+            if(message.getChannel().getOps().contains(message.getUser())){
+                message.getChannel().send().message(modComs.get(command));
+            }
+            else{
+                message.respond("You're not allowed to use this command.");
+            }
+        }
+        //checks if the command is in the custom commands available to everyone
+        else if(customComs.containsKey(command)){
+            message.getChannel().send().message(customComs.get(command));
+        }
+        else{
+            message.respond("No such command exists");
         }
     }
     
-    //getResponse implementation for MessageEvent objects
-    public String getResponse(MessageEvent event){
-        User user = event.getUser();
-        String message = event.getMessage();
-        Channel channel = event.getChannel();
-        
-        
-        switch(message){
-            case "!permit":
-                break;
-            default:
-                break;
-        }
-        
-        return "";
-    }
-
     //post the time in the chat (basically a useless function
     private String time(String sender){
         String time = new java.util.Date().toString();
@@ -111,17 +182,4 @@ public class Commands extends ListenerAdapter{
         //TODO: Implement this command
         return "";
     }
-
-    //the param for this should be the user to be permited
-    //need to separate the username from the command and pass it in
-    //easy to do, just need the time
-    /*
-    private String permitUser(String user){
-        //TODO: Implement this commnand to allow sender to post links
-        //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
-        permittedUsers.add(user);
-        String response = (user + " may post a link");
-        return response;
-    }
-    */
 }

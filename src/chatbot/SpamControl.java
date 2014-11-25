@@ -58,6 +58,8 @@ public class SpamControl extends ListenerAdapter{
         theList.add("goo.gl");
         theList.add("bit.ly");
         theList.add("owl.ly");
+        theList.add(".tv");
+        theList.add(".org");
         return theList;
 
 
