@@ -8,12 +8,9 @@ package chatbot;
 
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.*;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
@@ -23,36 +20,31 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class Commands extends ListenerAdapter{
     
     /**
-     * So in addition to hard coded commands I'm thinking of adding
-     * in two Map<String, String> for custom commands (mod only and 
-     * regular users) that will be saved to a txt file or something 
-     * when shutting down.
-     * 
-     * This is obviously a stretch goal kind of thing though.
+     * Custom commands now possible, just need to save them to an external file
+     * (or two)
      * 
      * Also a custom constructor that takes the channel name as a
      * parameter in order to load the appropriate custom commands
      * for that channel. (Assuming bot hosted on a server)
+     * 
+     * @param channelName
      */
 
-    /*
+    //Constructor for loading custom commands from a saved file
     public Commands(String channelName){
-        BufferedReader reader = new BufferedReader(new FileReader(channelName + ".txt"));
-        String line = null;
         
-        while((line = reader.readLine()) != null){
-            
-        }
+        
     }
-    */
     
-    HashMap<String, String> customComs = new HashMap<String, String>();
-    HashMap<String, String> modComs = new HashMap<String, String>();
+    
+    HashMap<String, String> customComs = new HashMap<>();
+    HashMap<String, String> modComs = new HashMap<>();
     
     //bot's behavior for messages
+    @Override
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
-        String response = "";
+        String response;
         
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
@@ -95,7 +87,7 @@ public class Commands extends ListenerAdapter{
                 break;
             //default message handling for custom commands
             default:
-                if(message.getMessage().startsWith("!")){
+                if(message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")){
                     customCommands(message);
                 }
                 break;
@@ -189,10 +181,13 @@ public class Commands extends ListenerAdapter{
      * supports the following !editcom formats
      * 
      * !editcom [command] -m/-e
+     *  -changes only the permissions of the command
      * 
      * !editcom [command] [output]
+     *  -changes only the output of the command
      * 
      * !editcom [command] -m/-e [output]
+     *  -changes both the permissions and the output of the command
      */
     private String editCom(String[] messageArray){
         

@@ -1,22 +1,21 @@
 package chatbot;
 
-import org.pircbotx.*;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Date;
 
 public class SpamControl extends ListenerAdapter{
-    private ArrayList<String> bannablePhrases = new ArrayList<String>();
-    private HashMap<String,Date> permittedUsers = new HashMap<String,Date>();
+    private ArrayList<String> bannablePhrases = new ArrayList<>();
+    private HashMap<String,Date> permittedUsers = new HashMap<>();
     
     public SpamControl(){
         bannablePhrases = populatePhrases();
     }
 
+    @Override
     public void onMessage(MessageEvent message){
         String currentMessage = message.getMessage();
         
@@ -33,6 +32,7 @@ public class SpamControl extends ListenerAdapter{
         if(!message.getChannel().getOps().contains(message.getUser())){
             for(String test : bannablePhrases){
                 if(currentMessage.contains(test)){
+                    System.out.println(message.getUser().getNick());
                     if(!permittedUsers.containsKey(message.getUser().getNick()) || permittedUsers.get(message.getUser().getNick()).before(new Date(System.currentTimeMillis()))){
                         purge(message);
                         break;
@@ -42,13 +42,13 @@ public class SpamControl extends ListenerAdapter{
         }
     }
 
-    public void purge(MessageEvent spamMessage){
+    private void purge(MessageEvent spamMessage){
         spamMessage.respond("come on now that's not allowed here");
 
         spamMessage.getChannel().send().message("/timeout "+spamMessage.getUser().getNick()+ " 1");
     }
 
-    public ArrayList <String> populatePhrases(){
+    private ArrayList <String> populatePhrases(){
         //method primarily designed for future implementation of reading in a file filled with all things to be timed out, including ascii art, just currently a placeholder for proof of concept
         ArrayList theList = new ArrayList();
         theList.add(".com");
@@ -60,9 +60,20 @@ public class SpamControl extends ListenerAdapter{
         theList.add("owl.ly");
         theList.add(".tv");
         theList.add(".org");
+        
+        /*
+        bannablePhrases.add(".com");
+        bannablePhrases.add(",net");
+        bannablePhrases.add(".net");
+        bannablePhrases.add(",com");
+        bannablePhrases.add("goo.gl");
+        bannablePhrases.add("bit.ly");
+        bannablePhrases.add("owl.ly");
+        bannablePhrases.add(".tv");
+        bannablePhrases.add(".org");
+        */
+        
         return theList;
-
-
     }
     
     private String permitUser(String user){

@@ -6,11 +6,9 @@
 
 package chatbot;
 
-import java.io.IOException;
 
 //import java.util.logging.Level;
 //import java.util.logging.Logger;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.*;
 
 /**
@@ -39,7 +37,7 @@ public class ChatBot extends PircBotX{
             .setLogin("LQ") //login part of hostmask, eg name:login@host
             .setAutoNickChange(false) //Automatically change nick when the current one is in use
             .setCapEnabled(false) //Enable CAP features
-            .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
+            .addListener(new Commands("slastic")) //This class is a listener, so add it to the bots known listeners
             .addListener(new SpamControl())
             .setServer("irc.twitch.tv", 6667, "oauth:secret")
             .addAutoJoinChannel("#slastic") //Join the slastic channel
