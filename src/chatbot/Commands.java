@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
+import java.sql.*;
 
 /**
  *
@@ -35,7 +36,7 @@ public class Commands extends ListenerAdapter{
         
         
     }
-    
+
     
     HashMap<String, String> customComs = new HashMap<>();
     HashMap<String, String> modComs = new HashMap<>();
@@ -45,7 +46,8 @@ public class Commands extends ListenerAdapter{
     public void onMessage(MessageEvent message){
         String newMessage = message.getMessage();
         String response;
-        
+        // test line to make connectToDatabase method called delete when sql commands are written throughout class
+        connectToDatabase("haha");
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
 
@@ -154,7 +156,7 @@ public class Commands extends ListenerAdapter{
     
     /**
      * Delete a custom command from the bot
-     * @param message
+     * @param
      * @return message regarding success of command removal
      */
     private String delCom(String command){
@@ -315,5 +317,23 @@ public class Commands extends ListenerAdapter{
     private String playlist(){
         //TODO: Implement this command
         return "";
+    }
+    private void connectToDatabase(String sql){
+        Connection connect = null;
+        Statement stm = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+            System.out.println("Opened database successfully");
+
+            stm = connect.createStatement();
+            stm.executeUpdate(sql);
+            stm.close();
+            connect.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Database modified");
     }
 }
