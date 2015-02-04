@@ -10,6 +10,8 @@ package chatbot;
 
 import java.util.HashMap;
 
+import org.pircbotx.Channel;
+import org.pircbotx.dcc.Chat;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 import java.sql.*;
@@ -60,7 +62,7 @@ public class Commands extends ListenerAdapter{
             //command to make a custom command for the bot
             case "!addcom":
                 if (message.getChannel().getOps().contains(message.getUser())){
-                    response = addCom(messageArray);
+                    response = addCom(messageArray, message.getChannel().toString());
                     message.getChannel().send().message(response);
                 }
                 else{
@@ -70,7 +72,7 @@ public class Commands extends ListenerAdapter{
             //command to delete a custom command from the bot
             case "!delcom":
                 if (message.getChannel().getOps().contains(message.getUser())){
-                    response = delCom(messageArray[1]);
+                    response = delCom(messageArray[1], message.getChannel().toString());
                     message.getChannel().send().message(response);
                 }
                 else{
@@ -80,7 +82,7 @@ public class Commands extends ListenerAdapter{
             //command to edit a custom command the bot has
             case "!editcom":
                 if (message.getChannel().getOps().contains(message.getUser())){
-                    response = editCom(messageArray);
+                    response = editCom(messageArray, message.getChannel().toString());
                     message.getChannel().send().message(response);
                 }
                 else{
@@ -110,7 +112,7 @@ public class Commands extends ListenerAdapter{
      *   - 'e' is for everyone
      * [output] is the message you want the bot to put in chat
      */    
-    private String addCom(String[] messageArray){
+    private String addCom(String[] messageArray, String channel){
         String output = "";
         
         //check that the command isn't one of the precoded ones
@@ -143,14 +145,24 @@ public class Commands extends ListenerAdapter{
         for (int i = 4; i < messageArray.length; i++){
             output += " " + messageArray[i];
         }
-        
+        int id=1;
+        // build sql statement
+        String statement = "INSERT INTO commands VALUES ( '" +id;
+        statement += "', '" + messageArray[1];
+        statement += "', '" + output;
+        statement += "', '" + messageArray[2];
+        statement += "', '" + channel +"')";
+        connectToDatabase(statement);
+
         if(messageArray[2].equals("-m")){
             modComs.put(messageArray[1], output);
         }
         else{
             customComs.put(messageArray[1], output);
         }
-        
+
+        //"INSERT INTO Commands " + "VALUES (id, 'command', 'response', 'permission', 'channel')
+
         return ("Custom command added successfully!");
     }
     
@@ -159,7 +171,7 @@ public class Commands extends ListenerAdapter{
      * @param
      * @return message regarding success of command removal
      */
-    private String delCom(String command){
+    private String delCom(String command, String channel){
         
         //check if the command does exist
         if(!modComs.containsKey(command) && !customComs.containsKey(command)){
@@ -191,7 +203,7 @@ public class Commands extends ListenerAdapter{
      * !editcom [command] -m/-e [output]
      *  -changes both the permissions and the output of the command
      */
-    private String editCom(String[] messageArray){
+    private String editCom(String[] messageArray, String channel){
         
         String command = messageArray[1];
         String output = "";
