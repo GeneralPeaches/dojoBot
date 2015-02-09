@@ -45,6 +45,7 @@ public class ChatBot extends PircBotX{
         
         //creates the bot
         ChatBot bot = new ChatBot(configuration);
+        Gui box = new Gui();
         
         //connect to server
         try {
