@@ -49,7 +49,6 @@ public class Commands extends ListenerAdapter {
     public void onMessage(MessageEvent message) {
         String newMessage = message.getMessage();
         String response;
-        System.out.println(message.getChannel().getName());
 
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
@@ -143,10 +142,10 @@ public class Commands extends ListenerAdapter {
         for (int i = 4; i < messageArray.length; i++) {
             output += " " + messageArray[i];
         }
-        int id = 1;
+        int id = getDatabaseSize()+1;
         // build sql statement
-        String statement = "INSERT INTO customcommands VALUES ( '" + id;
-        statement += "', '" + messageArray[1];
+        String statement = "INSERT INTO customcommands ('id', 'command', 'response', 'permission', 'channel') VALUES( '" +id;
+        statement +="', '"+ messageArray[1];
         statement += "', '" + output;
         statement += "', '" + messageArray[2];
         statement += "', '" + channel + "')";
@@ -310,7 +309,7 @@ public class Commands extends ListenerAdapter {
         String command = message.getMessage();
         String[]info;
         info = getFromDatabase(command,message.getChannel().getName());
-        System.out.println(info[1]);
+
 
         //checks if the command is in custom mod commands
         if (info[1].matches("-m")) {
@@ -342,7 +341,6 @@ public class Commands extends ListenerAdapter {
     private void connectToDatabase(String sql) {
         Connection connect = null;
         Statement stm = null;
-        System.out.println(sql);
         try {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
@@ -355,13 +353,11 @@ public class Commands extends ListenerAdapter {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("Database modified");
     }
 
     private String[] getFromDatabase(String command,String channel) {
         String sql = "SELECT response, permission FROM customcommands WHERE command='"+command+"' AND channel='"+channel + "';";
         Connection connect = null;
-        System.out.println(sql);
         Statement stm = null;
         String[] answer= new String[2];
 
@@ -379,7 +375,33 @@ public class Commands extends ListenerAdapter {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
-        System.out.println("database read");
+
+
+        return answer;
+    }
+
+    private int getDatabaseSize() {
+        String sql = "SELECT * FROM customcommands";
+        Connection connect = null;
+        Statement stm = null;
+        int answer=0;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+
+            stm = connect.createStatement();
+            ResultSet set = stm.executeQuery(sql);
+            //answer= set.getMetaData().getColumnCount();
+            while(set.next()){
+                answer = set.getInt(1);
+            }
+            stm.close();
+            connect.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
 
 
         return answer;
