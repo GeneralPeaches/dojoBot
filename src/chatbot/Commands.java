@@ -68,6 +68,18 @@ public class Commands extends ListenerAdapter {
                     message.respond("You are not allowed to add commands.");
                 }
                 break;
+            case "!commands":
+                if(messageArray.length ==1){
+                    ArrayList<String> commands = getCommands(message.getChannel().getName());
+                    String commandList = "The custom commands available to everyone for this channel are: ";
+                    while(!commands.isEmpty()){
+                        commandList += commands.remove(0) + ", ";
+                    }
+                    message.getChannel().send().message(commandList);
+
+                    break;
+
+                }
             //command to delete a custom command from the bot
             case "!delcom":
                 if (message.getChannel().getOps().contains(message.getUser())) {
@@ -351,7 +363,6 @@ public class Commands extends ListenerAdapter {
             connect.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -373,7 +384,6 @@ public class Commands extends ListenerAdapter {
             connect.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
         }
 
 
@@ -400,7 +410,32 @@ public class Commands extends ListenerAdapter {
             connect.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+        }
+
+
+        return answer;
+    }
+
+    private ArrayList getCommands(String channelName) {
+        String sql = "SELECT * FROM customcommands WHERE permission = '-e' AND channel='"+channelName+"';";
+        Connection connect = null;
+        Statement stm = null;
+        ArrayList<String> answer = new ArrayList<String>();
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+
+            stm = connect.createStatement();
+            ResultSet set = stm.executeQuery(sql);
+            //answer= set.getMetaData().getColumnCount();
+            while(set.next()){
+                answer.add(set.getString("command"));
+            }
+            stm.close();
+            connect.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
 
