@@ -24,7 +24,7 @@ public class SpamControl extends ListenerAdapter{
         if(messageArray[0].equals("!permit")){
             if(messageArray.length == 2) {
                 if (message.getChannel().getOps().contains(message.getUser())){
-                    message.respond(permitUser(messageArray[1]).toLowerCase());
+                    message.respond(permitUser(messageArray[1].toLowerCase()));
                 }
             }
         }
