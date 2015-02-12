@@ -205,16 +205,14 @@ public class Commands extends ListenerAdapter {
     /**
      * Edit an existing custom command
      *
-     * @param messageArray supports the following !editcom formats
-     *                     <p/>
-     *                     !editcom [command] -m/-e
-     *                     -changes only the permissions of the command
-     *                     <p/>
-     *                     !editcom [command] [output]
-     *                     -changes only the output of the command
-     *                     <p/>
-     *                     !editcom [command] -m/-e [output]
-     *                     -changes both the permissions and the output of the command
+     * @param messageArray 
+     * supports the following !editcom formats
+     *      !editcom [command] -m/-e
+     *          -changes only the permissions of the command
+     *      !editcom [command] [output]
+     *          -changes only the output of the command
+     *      !editcom [command] -m/-e [output]
+     *          -changes both the permissions and the output of the command
      */
     private String editCom(String[] messageArray, String channel) {
         // UPDATE commands SET response= 'newtext' where command = command AND channel= channel;
