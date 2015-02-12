@@ -74,9 +74,9 @@ public class Gui {
                         .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
                         .addListener(new SpamControl())
                         .setServer("irc.twitch.tv", 6667, "oauth:secret")
-                        .addAutoJoinChannel(channel) //Join the slastic channel
+                        .addAutoJoinChannel("#" + channel) //Join the slastic channel
                         .buildConfiguration();
-                        new ChatBot(configuration);
+                new ChatBot(configuration);
 
             }
         }
