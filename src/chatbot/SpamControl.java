@@ -79,18 +79,7 @@ public class SpamControl extends ListenerAdapter{
         theList.add("owl.ly");
         theList.add(".tv");
         theList.add(".org");
-        
-        /*
-        bannablePhrases.add(".com");
-        bannablePhrases.add(",net");
-        bannablePhrases.add(".net");
-        bannablePhrases.add(",com");
-        bannablePhrases.add("goo.gl");
-        bannablePhrases.add("bit.ly");
-        bannablePhrases.add("owl.ly");
-        bannablePhrases.add(".tv");
-        bannablePhrases.add(".org");
-        */
+
         
         return theList;
     }

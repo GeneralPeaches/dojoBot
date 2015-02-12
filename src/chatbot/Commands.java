@@ -9,13 +9,8 @@ package chatbot;
 
 
 import java.util.ArrayList;
-//import java.util.HashMap;
-
-import org.pircbotx.Channel;
-import org.pircbotx.dcc.Chat;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
-import java.sql.*;
 
 /**
  *
@@ -27,23 +22,11 @@ public class Commands extends ListenerAdapter {
      * Custom commands now possible, just need to save them to an external file
      * (or two)
      * <p/>
-     * Also a custom constructor that takes the channel name as a
-     * parameter in order to load the appropriate custom commands
-     * for that channel. (Assuming bot hosted on a server)
      *
      * @param
      */
 
-    //Constructor for loading custom commands from a saved file
-    public Commands() {
-
-
-    }
     DatabaseManagement manager = new DatabaseManagement();
-
-
-    //HashMap<String, String> customComs = new HashMap<>();
-    //HashMap<String, String> modComs = new HashMap<>();
 
     //bot's behavior for messages
     @Override
@@ -110,7 +93,7 @@ public class Commands extends ListenerAdapter {
         }
     }
 
-    //adds the command to the appropriate HashMap if properly formatted
+
 
     /**
      * @param messageArray
@@ -148,10 +131,6 @@ public class Commands extends ListenerAdapter {
             return ("Third argument must be '-m' or '-e'");
         }
 
-        /*
-        if (modComs.containsKey(messageArray[1]) || customComs.containsKey(messageArray[1])) {
-            return ("Command already exists");
-        }*/
 
         //build the command output from the message array
         output += messageArray[3];
@@ -167,15 +146,6 @@ public class Commands extends ListenerAdapter {
         statement += "', '" + channel + "')";
         manager.connectToDatabase(statement);
 
-        /*if(messageArray[2].equals("-m")){
-            modComs.put(messageArray[1], output);
-        }
-        else{
-            customComs.put(messageArray[1], output);
-        }
-        */
-
-        //"INSERT INTO Commands " + "VALUES (id, 'command', 'response', 'permission', 'channel')
 
         return ("Custom command added successfully!");
     }
@@ -188,18 +158,7 @@ public class Commands extends ListenerAdapter {
      */
     private String delCom(String command, String channel) {
         
-        /*//check if the command does exist
-        if(!modComs.containsKey(command) && !customComs.containsKey(command)){
-            return ("Custom command " + command + " does not exist");
-        }
-        //check if it's a mod command
-        else if(modComs.containsKey(command)){
-            modComs.remove(command);
-        }
-        else{
-            customComs.remove(command);
-        }
-        */
+
         String statement = "DELETE FROM customCommands WHERE command='" + command + "' AND channel = '"+channel+"'; ";
         manager.connectToDatabase(statement);
         return ("Custom command " + command + " was successfully removed.");
@@ -223,12 +182,6 @@ public class Commands extends ListenerAdapter {
         String output = "";
         String[] info;
 
-        //if the command does not exist it can't be edited
-        /*
-        if (!modComs.containsKey(command) && !customComs.containsKey(command)) {
-            return ("Command " + command + " does not exist");
-        }*/
-
         //if there's no change to permissions then replace old output
         if (!messageArray[2].equals("-e") || !messageArray[2].equals("-m")) {
             //build output string
@@ -237,12 +190,6 @@ public class Commands extends ListenerAdapter {
                 output += " " + messageArray[i];
             }
 
-            //replaces the old command with the new one
-           /* if (modComs.containsKey(command)) {
-                modComs.put(command, output);
-            } else if (customComs.containsKey(command)) {
-                customComs.put(command, output);
-            }*/
 
             String statement = "UPDATE customcommands SET response= '" + output + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
             manager.connectToDatabase(statement);
@@ -254,18 +201,12 @@ public class Commands extends ListenerAdapter {
                 //if they want to make it mod only
                 if (messageArray[2].equals("-m")) {
                     //if the command is already mod only
-
-
                     if (info[1].matches("-m")) {
                         return ("Command " + command + " is already mod only.");
                     } else {
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
                         manager.connectToDatabase(statement);
                         //changes the permissions of the command
-                        /*output = customComs.get(command);
-                        customComs.remove(command);
-                        modComs.put(command, output);*/
-
                         return ("Command " + command + " is now mod only.");
                     }
                 }
@@ -278,9 +219,6 @@ public class Commands extends ListenerAdapter {
                         //changes the permissions of the command
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
                         manager.connectToDatabase(statement);
-                        /*output = modComs.get(command);
-                        modComs.remove(command);
-                        customComs.put(command, output);*/
 
                         return ("Command " + command + " is available to everyone.");
                     }
@@ -294,22 +232,7 @@ public class Commands extends ListenerAdapter {
                 String statement = "UPDATE customcommands SET response = ' " + output+  "' permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
                 manager.connectToDatabase(statement);
 
-               /* if (customComs.containsKey(command)) {
-                    if (messageArray[2].equals("-e")) {
-                        customComs.put(command, output);
-                    } else {
-                        customComs.remove(command);
-                        modComs.put(command, output);
-                    }
-                    return ("Command " + command + " successfully updated.");
-                } else {
-                    if (messageArray[2].equals("-m")) {
-                        modComs.put(command, output);
-                    } else {
-                        modComs.remove(command);
-                        customComs.put(command, output);
-                    }*/
-                    return ("Command " + command + " successfully updated.");
+                return ("Command " + command + " successfully updated.");
 
             }
         }
