@@ -6,7 +6,7 @@ package chatbot;
 
 
     //Imports are listed in full to show what's being used
-//could just import javax.swing.* and java.awt.* etc..
+    //could just import javax.swing.* and java.awt.* etc..
     import javax.swing.*;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
@@ -29,8 +29,14 @@ public class Gui {
             guiFrame.setLocationRelativeTo(null);
 
             JButton close = new JButton("Close");
+            
+            JPanel panel = new JPanel();
 
+            close.setSize(100,85);
+            
             close.addActionListener(new CloseListener());
+            panel.add(close);
+            guiFrame.add(panel);
             guiFrame.repaint();
             guiFrame.setVisible(true);
 

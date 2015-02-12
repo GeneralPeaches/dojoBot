@@ -9,7 +9,7 @@ package chatbot;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 
 import org.pircbotx.Channel;
 import org.pircbotx.dcc.Chat;
@@ -41,8 +41,8 @@ public class Commands extends ListenerAdapter {
     }
 
 
-    HashMap<String, String> customComs = new HashMap<>();
-    HashMap<String, String> modComs = new HashMap<>();
+    //HashMap<String, String> customComs = new HashMap<>();
+    //HashMap<String, String> modComs = new HashMap<>();
 
     //bot's behavior for messages
     @Override
@@ -145,9 +145,10 @@ public class Commands extends ListenerAdapter {
             return ("Third argument must be '-m' or '-e'");
         }
 
+        /*
         if (modComs.containsKey(messageArray[1]) || customComs.containsKey(messageArray[1])) {
             return ("Command already exists");
-        }
+        }*/
 
         //build the command output from the message array
         output += messageArray[3];
@@ -222,9 +223,10 @@ public class Commands extends ListenerAdapter {
         String[] info;
 
         //if the command does not exist it can't be edited
+        /*
         if (!modComs.containsKey(command) && !customComs.containsKey(command)) {
             return ("Command " + command + " does not exist");
-        }
+        }*/
 
         //if there's no change to permissions then replace old output
         if (!messageArray[2].equals("-e") || !messageArray[2].equals("-m")) {
