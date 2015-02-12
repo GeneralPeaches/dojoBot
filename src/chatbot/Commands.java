@@ -39,6 +39,7 @@ public class Commands extends ListenerAdapter {
 
 
     }
+    DatabaseManagement manager = new DatabaseManagement();
 
 
     //HashMap<String, String> customComs = new HashMap<>();
@@ -49,6 +50,8 @@ public class Commands extends ListenerAdapter {
     public void onMessage(MessageEvent message) {
         String newMessage = message.getMessage();
         String response;
+
+
 
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
@@ -70,7 +73,7 @@ public class Commands extends ListenerAdapter {
                 break;
             case "!commands":
                 if(messageArray.length ==1){
-                    ArrayList<String> commands = getCommands(message.getChannel().getName());
+                    ArrayList<String> commands = manager.getCommands(message.getChannel().getName());
                     String commandList = "The custom commands available to everyone for this channel are: ";
                     while(!commands.isEmpty()){
                         commandList += commands.remove(0) + ", ";
@@ -155,14 +158,14 @@ public class Commands extends ListenerAdapter {
         for (int i = 4; i < messageArray.length; i++) {
             output += " " + messageArray[i];
         }
-        int id = getDatabaseSize()+1;
+        int id = manager.getDatabaseSize()+1;
         // build sql statement
         String statement = "INSERT INTO customcommands ('id', 'command', 'response', 'permission', 'channel') VALUES( '" +id;
         statement +="', '"+ messageArray[1];
         statement += "', '" + output;
         statement += "', '" + messageArray[2];
         statement += "', '" + channel + "')";
-        connectToDatabase(statement);
+        manager.connectToDatabase(statement);
 
         /*if(messageArray[2].equals("-m")){
             modComs.put(messageArray[1], output);
@@ -198,7 +201,7 @@ public class Commands extends ListenerAdapter {
         }
         */
         String statement = "DELETE FROM customCommands WHERE command='" + command + "' AND channel = '"+channel+"'; ";
-        connectToDatabase(statement);
+        manager.connectToDatabase(statement);
         return ("Custom command " + command + " was successfully removed.");
     }
 
@@ -242,12 +245,12 @@ public class Commands extends ListenerAdapter {
             }*/
 
             String statement = "UPDATE customcommands SET response= '" + output + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
-            connectToDatabase(statement);
+            manager.connectToDatabase(statement);
             return ("Command " + command + " successfully updated.");
         } else {
             //if the command is just to change permissions
             if (messageArray.length < 4) {
-                info = getFromDatabase(command,channel);
+                info = manager.getFromDatabase(command,channel);
                 //if they want to make it mod only
                 if (messageArray[2].equals("-m")) {
                     //if the command is already mod only
@@ -257,7 +260,7 @@ public class Commands extends ListenerAdapter {
                         return ("Command " + command + " is already mod only.");
                     } else {
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
-                        connectToDatabase(statement);
+                        manager.connectToDatabase(statement);
                         //changes the permissions of the command
                         /*output = customComs.get(command);
                         customComs.remove(command);
@@ -274,7 +277,7 @@ public class Commands extends ListenerAdapter {
                     } else {
                         //changes the permissions of the command
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
-                        connectToDatabase(statement);
+                        manager.connectToDatabase(statement);
                         /*output = modComs.get(command);
                         modComs.remove(command);
                         customComs.put(command, output);*/
@@ -289,7 +292,7 @@ public class Commands extends ListenerAdapter {
                     output += " " + messageArray[i];
                 }
                 String statement = "UPDATE customcommands SET response = ' " + output+  "' permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
-                connectToDatabase(statement);
+                manager.connectToDatabase(statement);
 
                /* if (customComs.containsKey(command)) {
                     if (messageArray[2].equals("-e")) {
@@ -320,7 +323,7 @@ public class Commands extends ListenerAdapter {
     private void customCommands(MessageEvent message) {
         String command = message.getMessage();
         String[]info;
-        info = getFromDatabase(command,message.getChannel().getName());
+        info = manager.getFromDatabase(command,message.getChannel().getName());
 
 
         //checks if the command is in custom mod commands
@@ -350,96 +353,6 @@ public class Commands extends ListenerAdapter {
         return "";
     }
 
-    private void connectToDatabase(String sql) {
-        Connection connect = null;
-        Statement stm = null;
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
-            stm = connect.createStatement();
-            stm.executeUpdate(sql);
-            stm.close();
-            connect.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-    }
-
-    private String[] getFromDatabase(String command,String channel) {
-        String sql = "SELECT response, permission FROM customcommands WHERE command='"+command+"' AND channel='"+channel + "';";
-        Connection connect = null;
-        Statement stm = null;
-        String[] answer= new String[2];
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
-
-            stm = connect.createStatement();
-            ResultSet set = stm.executeQuery(sql);
-            answer[0] = set.getString("response");
-            answer[1] = set.getString("permission");
-            stm.close();
-            connect.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-
-
-        return answer;
-    }
-
-    private int getDatabaseSize() {
-        String sql = "SELECT * FROM customcommands";
-        Connection connect = null;
-        Statement stm = null;
-        int answer=0;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
-
-            stm = connect.createStatement();
-            ResultSet set = stm.executeQuery(sql);
-            //answer= set.getMetaData().getColumnCount();
-            while(set.next()){
-                answer = set.getInt(1);
-            }
-            stm.close();
-            connect.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-
-
-        return answer;
-    }
-
-    private ArrayList getCommands(String channelName) {
-        String sql = "SELECT * FROM customcommands WHERE permission = '-e' AND channel='"+channelName+"';";
-        Connection connect = null;
-        Statement stm = null;
-        ArrayList<String> answer = new ArrayList<String>();
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
-
-            stm = connect.createStatement();
-            ResultSet set = stm.executeQuery(sql);
-            //answer= set.getMetaData().getColumnCount();
-            while(set.next()){
-                answer.add(set.getString("command"));
-            }
-            stm.close();
-            connect.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-        }
-
-
-        return answer;
-    }
 
 }
