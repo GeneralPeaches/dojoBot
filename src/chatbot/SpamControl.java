@@ -10,10 +10,10 @@ import java.util.Date;
 public class SpamControl extends ListenerAdapter{
     private ArrayList<String> bannablePhrases = new ArrayList<>();
     private HashMap<String,Date> permittedUsers = new HashMap<>();
-    private Boolean status;
+    private Boolean off;
     public SpamControl(){
         bannablePhrases = populatePhrases();
-        status = false;
+        off = true;
     }
 
 
@@ -36,11 +36,11 @@ public class SpamControl extends ListenerAdapter{
             if(messageArray.length == 2) {
                 if (message.getChannel().getOps().contains(message.getUser())){
                     if(messageArray[1].equals("on")){
-                        status = false;
+                        off = false;
                         message.respond("spam filter enabled");
                     }
                     else if(messageArray[1].equals("off")){
-                        status = true;
+                        off = true;
                         message.respond("spam filter disabled");
                     }
 
@@ -48,7 +48,7 @@ public class SpamControl extends ListenerAdapter{
             }
         }
 
-        if(!message.getChannel().getOps().contains(message.getUser()) && !status){
+        if(!message.getChannel().getOps().contains(message.getUser()) && !off){
             for(String test : bannablePhrases){
                 if(currentMessage.contains(test)){
                     System.out.println(message.getUser().getNick());
