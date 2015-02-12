@@ -1,17 +1,18 @@
 Dojobot is a simple bot intended as a fun side project for use by my friends.
 
-v 1.01
+v 1.02
 
 Features:
 	- Custom command creation, deletion, and editing by mods and channel owner
 	- Custom command persistence using a database
 	- Basic spam filtering functionality
-	- Incredibly basic GUI with a button that closes the bot.
+		- can now be toggled on and off
+	- Basic Gui with close and connect button
 
 TO-DO:
 	- GUI for user friendly bot control
-		- Connect button
-		- Means of toggling bot functionality
+		- Possible additions:
+			- Music Player (Last thing)
 	- Potential commands:
 		- music commands
 		- polling commands
