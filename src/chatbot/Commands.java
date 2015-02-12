@@ -31,11 +31,11 @@ public class Commands extends ListenerAdapter {
      * parameter in order to load the appropriate custom commands
      * for that channel. (Assuming bot hosted on a server)
      *
-     * @param channelName
+     * @param
      */
 
     //Constructor for loading custom commands from a saved file
-    public Commands(String channelName) {
+    public Commands() {
 
 
     }

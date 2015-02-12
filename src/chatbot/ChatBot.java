@@ -18,13 +18,20 @@ import org.pircbotx.*;
 public class ChatBot extends PircBotX{
     
     public ChatBot(Configuration config){
+
         super(config);
+        try {
+            this.connect();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
     
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws Exception{
+   // public static void main(String[] args) throws Exception{
         // TODO code application logic here
         //I want to have the bot join the appropriate channel
         //immediately when run, but I don't think that's feasible.
@@ -32,12 +39,12 @@ public class ChatBot extends PircBotX{
         //String channel = "#" + channelName;
        
         //creates the configuration for the bot to use
-        Configuration configuration = new Configuration.Builder()
+        /*Configuration configuration = new Configuration.Builder()
             .setName("dojobot") //Set the nick of the bot.
             .setLogin("LQ") //login part of hostmask, eg name:login@host
             .setAutoNickChange(false) //Automatically change nick when the current one is in use
             .setCapEnabled(false) //Enable CAP features
-            .addListener(new Commands("slastic")) //This class is a listener, so add it to the bots known listeners
+            .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
             .addListener(new SpamControl())
             .setServer("irc.twitch.tv", 6667, "oauth:secret")
             .addAutoJoinChannel("#slastic") //Join the slastic channel
@@ -53,6 +60,6 @@ public class ChatBot extends PircBotX{
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
-    }
+        */
+    //}
 }
