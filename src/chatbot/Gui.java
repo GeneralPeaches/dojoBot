@@ -5,11 +5,11 @@ package chatbot;
  */
 
 
-    //Imports are listed in full to show what's being used
-    //could just import javax.swing.* and java.awt.* etc..
-    import javax.swing.*;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
+//Imports are listed in full to show what's being used
+//could just import javax.swing.* and java.awt.* etc..
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class Gui {
@@ -27,14 +27,19 @@ public class Gui {
             guiFrame.setTitle("DojoBot");
             guiFrame.setSize(300,250);
             guiFrame.setLocationRelativeTo(null);
-
-            JButton close = new JButton("Close");
             
             JPanel panel = new JPanel();
 
-            close.setSize(100,85);
-            
+            JButton close = new JButton("Close");
             close.addActionListener(new CloseListener());
+            
+            JTextField channelName = new JTextField("Type Channel Name", 20);
+            
+            JButton connect = new JButton("Connect");
+            //connect.addActionListener(new ConnectListener);
+            
+            panel.add(channelName);
+            panel.add(connect);
             panel.add(close);
             guiFrame.add(panel);
             guiFrame.repaint();
