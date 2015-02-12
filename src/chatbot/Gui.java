@@ -66,7 +66,7 @@ public class Gui {
             @Override
             public void actionPerformed(ActionEvent e){
                 String channel = channelName.getText().toString();
-                Configuration configuration = new Configuration.Builder()
+                final Configuration configuration = new Configuration.Builder()
                         .setName("dojobot") //Set the nick of the bot.
                         .setLogin("LQ") //login part of hostmask, eg name:login@host
                         .setAutoNickChange(false) //Automatically change nick when the current one is in use
@@ -76,7 +76,14 @@ public class Gui {
                         .setServer("irc.twitch.tv", 6667, "oauth:secret")
                         .addAutoJoinChannel("#" + channel) //Join the slastic channel
                         .buildConfiguration();
-                new ChatBot(configuration);
+
+               Thread botThread = new Thread(){
+                   public void run(){
+                           new ChatBot(configuration);
+                   }
+               };
+                botThread.start();
+
 
             }
         }

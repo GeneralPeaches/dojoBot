@@ -1,7 +1,7 @@
 package chatbot;
 
 /**
- * Created by Dani7 on 2/12/2015.
+ * Created by slastic on 2/12/2015.
  */
 public class BotMain {
 
