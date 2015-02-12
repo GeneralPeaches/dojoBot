@@ -103,7 +103,7 @@ public class Commands extends ListenerAdapter {
                 break;
             //default message handling for custom commands
             default:
-                if (message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")) {
+                if (message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")&& !messageArray[0].equals("!spam")) {
                     customCommands(message);
                 }
                 break;
