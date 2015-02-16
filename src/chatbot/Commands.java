@@ -183,7 +183,7 @@ public class Commands extends ListenerAdapter {
         String[] info;
 
         //if there's no change to permissions then replace old output
-        if (!messageArray[2].equals("-e") || !messageArray[2].equals("-m")) {
+        if (!messageArray[2].equals("-e") && !messageArray[2].equals("-m")) {
             //build output string
             output += messageArray[2];
             for (int i = 3; i < messageArray.length; i++) {
@@ -194,7 +194,8 @@ public class Commands extends ListenerAdapter {
             String statement = "UPDATE customcommands SET response= '" + output + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
             manager.connectToDatabase(statement);
             return ("Command " + command + " successfully updated.");
-        } else {
+        } 
+        else {
             //if the command is just to change permissions
             if (messageArray.length < 4) {
                 info = manager.getFromDatabase(command,channel);
@@ -223,7 +224,8 @@ public class Commands extends ListenerAdapter {
                         return ("Command " + command + " is available to everyone.");
                     }
                 }
-            } else {
+            } 
+            else {
                 //build output string
                 output += messageArray[3];
                 for (int i = 4; i < messageArray.length; i++) {
