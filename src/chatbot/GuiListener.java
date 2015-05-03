@@ -6,8 +6,13 @@
 
 package chatbot;
 
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.JTextField;
 import org.pircbotx.Configuration;
 
@@ -31,7 +36,7 @@ public class GuiListener implements ActionListener{
                 System.exit(0);
                 break;
             case "Connect":
-                String channel = channelName.getText().toString();
+                String channel = channelName.getText();
                 final Configuration configuration = new Configuration.Builder()
                     .setName("dojobot") //Set the nick of the bot.
                     .setLogin("LQ") //login part of hostmask, eg name:login@host
@@ -49,6 +54,25 @@ public class GuiListener implements ActionListener{
                     }
                 };
                 botThread.start();
+                break;
+            case "Authenticate":
+                URI site = null;
+                
+                try {
+                    site = new URI("www.google.com");
+                } catch(URISyntaxException s) {
+                    
+                }
+                
+                Desktop window = Desktop.getDesktop();
+                
+                try{
+                    window.browse(site);
+                } catch (IOException i){
+                    
+                }
+                
+                
                 break;
             default:
                 break;

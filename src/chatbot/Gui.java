@@ -31,10 +31,16 @@ public class Gui {
             
         JButton connect = new JButton("Connect");
         connect.addActionListener(listener);
+        
+        /*
+        JButton authenticate = new JButton("Authenticate");
+        authenticate.addActionListener(listener);
+        */
 
         panel.add(channelName);
         panel.add(connect);
         panel.add(close);
+        //panel.add(authenticate);
         guiFrame.add(panel);
         guiFrame.repaint();
         guiFrame.setVisible(true);
