@@ -31,8 +31,14 @@ public class Gui {
 
 
         JCheckBox commands = new JCheckBox("commands");
+        commands.addActionListener(listener);
+
         JCheckBox queue = new JCheckBox("queue");
+        commands.addActionListener(listener);
+
         JCheckBox filter = new JCheckBox("filter");
+        commands.addActionListener(listener);
+
             
         JButton connect = new JButton("Connect");
         connect.addActionListener(listener);

@@ -74,6 +74,15 @@ public class GuiListener implements ActionListener{
                 
                 
                 break;
+            case "commands":
+
+                break;
+            case "queue":
+
+                break;
+            case "filter":
+
+                break;
             default:
                 break;
         }
