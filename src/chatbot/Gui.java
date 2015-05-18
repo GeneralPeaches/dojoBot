@@ -34,10 +34,10 @@ public class Gui {
         commands.addActionListener(listener);
 
         JCheckBox queue = new JCheckBox("queue");
-        commands.addActionListener(listener);
+        queue.addActionListener(listener);
 
         JCheckBox filter = new JCheckBox("filter");
-        commands.addActionListener(listener);
+        filter.addActionListener(listener);
 
             
         JButton connect = new JButton("Connect");
@@ -51,6 +51,9 @@ public class Gui {
         panel.add(channelName);
         panel.add(connect);
         panel.add(close);
+        panel.add(queue);
+        panel.add(filter);
+        panel.add(commands);
         //panel.add(authenticate);
         guiFrame.add(panel);
         guiFrame.repaint();

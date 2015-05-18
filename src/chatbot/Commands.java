@@ -15,10 +15,13 @@ import org.pircbotx.hooks.events.MessageEvent;
  *
  * @author General Peaches and Slastic
  */
-public class Commands extends ListenerAdapter {
+public class Commands extends ListenerAdapter implements GuiSubscriber {
 
-    DatabaseManagement manager = new DatabaseManagement();
-    LinkedList<String> playerQueue = new LinkedList<>();
+    private final DatabaseManagement manager = new DatabaseManagement();
+    private LinkedList<String> playerQueue = new LinkedList<>();
+    
+    private boolean queueActive = true;
+    private boolean commandsActive = true;
 
     //bot's behavior for messages
     @Override
@@ -37,78 +40,93 @@ public class Commands extends ListenerAdapter {
                 break;
             //command to make a custom command for the bot
             case "!addcom":
-                if (message.getChannel().getOps().contains(message.getUser())) {
-                    response = addCom(messageArray, message.getChannel().getName());
-                    message.getChannel().send().message(response);
-                } else {
-                    message.respond("You are not allowed to add commands.");
+                if(commandsActive){
+                    if (message.getChannel().getOps().contains(message.getUser())) {
+                        response = addCom(messageArray, message.getChannel().getName());
+                        message.getChannel().send().message(response);
+                    } else {
+                        message.respond("You are not allowed to add commands.");
+                    }
                 }
                 break;
             case "!commands":
-                if(messageArray.length ==1){
-                    ArrayList<String> commands = manager.getCommands(message.getChannel().getName());
-                    String commandList = "The custom commands available to everyone for this channel are: ";
-                    while(!commands.isEmpty()){
-                        commandList += commands.remove(0) + ", ";
+                if(commandsActive){
+                    if(messageArray.length ==1){
+                        ArrayList<String> commands = manager.getCommands(message.getChannel().getName());
+                        String commandList = "The custom commands available to everyone for this channel are: ";
+                        while(!commands.isEmpty()){
+                            commandList += commands.remove(0) + ", ";
+                        }
+                        message.getChannel().send().message(commandList);
                     }
-                    message.getChannel().send().message(commandList);
-
-                    break;
                 }
+                break;
             //command to delete a custom command from the bot
             case "!delcom":
-                if (message.getChannel().getOps().contains(message.getUser())) {
-                    response = delCom(messageArray[1], message.getChannel().getName());
-                    message.getChannel().send().message(response);
-                } else {
-                    message.respond("You are not allowed to remove commands.");
+                if(commandsActive){
+                    if (message.getChannel().getOps().contains(message.getUser())) {
+                        response = delCom(messageArray[1], message.getChannel().getName());
+                        message.getChannel().send().message(response);
+                    } else {
+                        message.respond("You are not allowed to remove commands.");
+                    }
                 }
                 break;
             //command to edit a custom command the bot has
             case "!editcom":
-                if (message.getChannel().getOps().contains(message.getUser())) {
-                    response = editCom(messageArray, message.getChannel().getName());
-                    message.getChannel().send().message(response);
-                } else {
-                    message.respond("You are not allowed to edit commands.");
+                if(commandsActive){
+                    if (message.getChannel().getOps().contains(message.getUser())) {
+                        response = editCom(messageArray, message.getChannel().getName());
+                        message.getChannel().send().message(response);
+                    } else {
+                        message.respond("You are not allowed to edit commands.");
+                    }
                 }
                 break;
             case "!join":
-                if(!playerQueue.contains(message.getUser().getNick())){
-                    playerQueue.add(message.getUser().getNick());
-                    message.respond("You have been added to the queue.");
-                }
-                else{
-                    message.respond("You are already in the queue!");
+                if(queueActive){
+                    if(!playerQueue.contains(message.getUser().getNick())){
+                        playerQueue.add(message.getUser().getNick());
+                        message.respond("You have been added to the queue.");
+                    }
+                    else{
+                        message.respond("You are already in the queue!");
+                    }
                 }
                 break;
             case "!leave":
-                if(!playerQueue.contains(message.getUser().getNick())){
-                    message.respond("You aren't in the queue!");
-                }
-                else{
-                    playerQueue.remove(message.getUser().getNick());
-                    message.respond("You have been removed from the queue");
+                if(queueActive){
+                    if(!playerQueue.contains(message.getUser().getNick())){
+                        message.respond("You aren't in the queue!");
+                    }
+                    else{
+                        playerQueue.remove(message.getUser().getNick());
+                        message.respond("You have been removed from the queue");
+                    }
                 }
                 break;
             case "!getPlayers":
-                if(messageArray.length < 2){
-                    message.respond("Please specify a number of players");
-                }
-                else{
-                    if(message.getChannel().getOps().contains(message.getUser())){
-                        response = getPlayers(messageArray[1]);
-                        message.getChannel().send().message(response);
+                if(queueActive){
+                    if(messageArray.length < 2){
+                        message.respond("Please specify a number of players");
                     }
-                    else {
-                        message.respond("You are not allowed to get players from the queue.");
+                    else{
+                        if(message.getChannel().getOps().contains(message.getUser())){
+                            response = getPlayers(messageArray[1]);
+                            message.getChannel().send().message(response);
+                        }
+                        else {
+                            message.respond("You are not allowed to get players from the queue.");
+                        }
                     }
                 }
                 break;
             //default message handling for custom commands
             default:
-                if (message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")&& !messageArray[0].equals("!spam")) {
-                    customCommands(message);
+                if(commandsActive){
+                    if (message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")&& !messageArray[0].equals("!spam")) {
+                        customCommands(message);
+                    }
                 }
                 break;
         }
@@ -315,5 +333,17 @@ public class Commands extends ListenerAdapter {
     private String playlist() {
         //TODO: Implement this command
         return "";
+    }
+    
+    @Override
+    public void notify(String message) {
+        switch (message){
+            case "queue":
+                queueActive = !queueActive;
+                break;
+            case "commands":
+                commandsActive = !commandsActive;
+                break;
+        }
     }
 }

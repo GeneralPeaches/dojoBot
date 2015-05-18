@@ -9,7 +9,6 @@ package chatbot;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,7 +19,7 @@ import org.pircbotx.Configuration;
  *
  * @author JJ
  */
-public class GuiListener implements ActionListener{
+public class GuiListener implements ActionListener, GuiPublisher{
     private JTextField channelName;
     
     public GuiListener(JTextField channel){
@@ -37,13 +36,17 @@ public class GuiListener implements ActionListener{
                 break;
             case "Connect":
                 String channel = channelName.getText();
+                
+                Commands com = new Commands();
+                SpamControl sc = new SpamControl();
+                
                 final Configuration configuration = new Configuration.Builder()
                     .setName("dojobot") //Set the nick of the bot.
                     .setLogin("LQ") //login part of hostmask, eg name:login@host
                     .setAutoNickChange(false) //Automatically change nick when the current one is in use
                     .setCapEnabled(false) //Enable CAP features
-                    .addListener(new Commands()) //This class is a listener, so add it to the bots known listeners
-                    .addListener(new SpamControl())
+                    .addListener(com) //This class is a listener, so add it to the bots known listeners
+                    .addListener(sc)
                     .setServer("irc.twitch.tv", 6667, "oauth:secret")
                     .addAutoJoinChannel("#" + channel) //Join the slastic channel
                     .buildConfiguration();
@@ -54,7 +57,12 @@ public class GuiListener implements ActionListener{
                     }
                 };
                 botThread.start();
+                
+                register(com);
+                register(sc);
+                
                 break;
+                /*
             case "Authenticate":
                 URI site = null;
                 
@@ -73,18 +81,27 @@ public class GuiListener implements ActionListener{
                 }
                 
                 
-                break;
-            case "commands":
-
-                break;
-            case "queue":
-
-                break;
-            case "filter":
-
-                break;
+                break;*/
             default:
+                broadcast(command);
                 break;
+        }
+    }
+    
+    @Override
+    public void register(GuiSubscriber sub){
+        subscribers.add(sub);
+    }
+    
+    @Override
+    public void remove(GuiSubscriber sub){
+        subscribers.remove(sub);
+    }
+    
+    @Override
+    public void broadcast(String message){
+        for(GuiSubscriber sub:subscribers){
+            sub.notify(message);
         }
     }
 }

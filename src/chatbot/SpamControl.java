@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Date;
 
-public class SpamControl extends ListenerAdapter{
+public class SpamControl extends ListenerAdapter implements GuiSubscriber {
     private ArrayList<String> bannablePhrases = new ArrayList<>();
     private HashMap<String,Date> permittedUsers = new HashMap<>();
     private Boolean off;
@@ -15,8 +15,6 @@ public class SpamControl extends ListenerAdapter{
         bannablePhrases = populatePhrases();
         off = true;
     }
-
-
 
     @Override
     public void onMessage(MessageEvent message){
@@ -93,5 +91,12 @@ public class SpamControl extends ListenerAdapter{
         
         String response = (user + " may post a link");
         return response;
+    }
+    
+    @Override
+    public void notify(String message){
+        if(message.equals("filter")){
+            off = !off;
+        }
     }
 }
