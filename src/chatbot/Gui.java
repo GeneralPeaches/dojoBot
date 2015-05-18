@@ -30,10 +30,10 @@ public class Gui {
         close.addActionListener(listener);
 
 
-        JCheckBox commands = new JCheckBox("commands");
+        JCheckBox commands = new JCheckBox("commands", true);
         commands.addActionListener(listener);
 
-        JCheckBox queue = new JCheckBox("queue");
+        JCheckBox queue = new JCheckBox("queue", true);
         queue.addActionListener(listener);
 
         JCheckBox filter = new JCheckBox("filter");
