@@ -78,7 +78,7 @@ public class DatabaseManagement {
     }
 
     protected ArrayList getCommands(String channelName) {
-        String sql = "SELECT * FROM customcommands WHERE permission = '-e' AND channel='"+channelName+"';";
+        String sql = "SELECT * FROM customcommands WHERE permission = '-e' AND channel='"+channelName+"' order by COMMAND ASC;";
         Connection connect = null;
         Statement stm = null;
         ArrayList<String> answer = new ArrayList<String>();
