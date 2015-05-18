@@ -53,8 +53,8 @@ public class Commands extends ListenerAdapter {
                     }
                     message.getChannel().send().message(commandList);
 
-                    break;
-                }
+
+                }break;
             //command to delete a custom command from the bot
             case "!delcom":
                 if (message.getChannel().getOps().contains(message.getUser())) {
