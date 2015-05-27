@@ -18,10 +18,11 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
 
     private LinkedList<String> playerQueue = new LinkedList<>();
     private ArrayList<String> giveawayEntries = new ArrayList<>();
-    private HashMap<String,Integer> poll= new HashMap(0);
+    private HashMap<String,Integer> poll = new HashMap<>();
 
     Random rnd = new Random();
 
+    @Override
     public void onMessage(MessageEvent message) {
         String newMessage = message.getMessage();
         String response;
@@ -38,7 +39,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 break;
             // queue commands
             case "!queue":
-                if(messageArray.length ==2) {
+                if(messageArray.length == 2) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         if (messageArray[1].equals("off")) {
                             queueActive = false;
@@ -91,24 +92,22 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                         if (!poll.isEmpty()) {
                             poll.clear();
                         }
-                        for(int i = 1; i>messageArray.length; i++){
+                        for(int i = 1; i < messageArray.length; i++){
                             poll.put(messageArray[i], 0);
                         }
                     message.respond("poll created");
 
-                        pollOpen = true;
+                    pollOpen = true;
                     }
                 //}
                 break;
             case "!vote":
                 if(pollOpen){
-                    if(poll.containsKey(messageArray[1])){ //problem is in this line
-                        System.out.println("poll option valid");
-                        poll.replace(messageArray[1],poll.get(messageArray[1]),poll.get(messageArray[1]+1));
+                    if(poll.containsKey(messageArray[1])){
+                        poll.replace(messageArray[1],poll.get(messageArray[1]),poll.get(messageArray[1])+1);
                         message.respond("vote accepted");
                     }
                     //incrememnt choice in the poll
-
                 }
                 break;
             case "closePoll":

@@ -48,7 +48,7 @@ public class GuiListener implements ActionListener, GuiPublisher{
                     .setCapEnabled(false) //Enable CAP features
                     .addListener(com) //This class is a listener, so add it to the bots known listeners
                     .addListener(sc).addListener(cu)
-                    .setServer("irc.twitch.tv", 6667, "oauth:private")
+                    .setServer("irc.twitch.tv", 6667, "oauth:secret")
                     .addAutoJoinChannel("#" + channel) //Join the slastic channel
                     .buildConfiguration();
 
