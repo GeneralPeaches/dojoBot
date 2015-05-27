@@ -18,7 +18,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class Commands extends ListenerAdapter implements GuiSubscriber {
 
     private final DatabaseManagement manager = new DatabaseManagement();
-    private LinkedList<String> playerQueue = new LinkedList<>();
+
     
     private boolean queueActive = true;
     private boolean commandsActive = true;
@@ -33,11 +33,17 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
         String[] messageArray = newMessage.split(" ");
 
         switch (messageArray[0]) {
-            case "!music":
-                if (messageArray.length == 1)
-                    message.respond("the playlist is ...");
-                //response = playlist();
-                break;
+            case "!command":
+                if (message.getChannel().getOps().contains(message.getUser())) {
+                    if (messageArray.length == 2) {
+                        if (messageArray[1].equals("off")) {
+                            commandsActive = false;
+                        } else {
+                            commandsActive = true;
+                        }
+                    }
+                }
+            break;
             //command to make a custom command for the bot
             case "!addcom":
                 if(commandsActive){
@@ -83,44 +89,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                     }
                 }
                 break;
-            case "!join":
-                if(queueActive){
-                    if(!playerQueue.contains(message.getUser().getNick())){
-                        playerQueue.add(message.getUser().getNick());
-                        message.respond("You have been added to the queue.");
-                    }
-                    else{
-                        message.respond("You are already in the queue!");
-                    }
-                }
-                break;
-            case "!leave":
-                if(queueActive){
-                    if(!playerQueue.contains(message.getUser().getNick())){
-                        message.respond("You aren't in the queue!");
-                    }
-                    else{
-                        playerQueue.remove(message.getUser().getNick());
-                        message.respond("You have been removed from the queue");
-                    }
-                }
-                break;
-            case "!getPlayers":
-                if(queueActive){
-                    if(messageArray.length < 2){
-                        message.respond("Please specify a number of players");
-                    }
-                    else{
-                        if(message.getChannel().getOps().contains(message.getUser())){
-                            response = getPlayers(messageArray[1]);
-                            message.getChannel().send().message(response);
-                        }
-                        else {
-                            message.respond("You are not allowed to get players from the queue.");
-                        }
-                    }
-                }
-                break;
+
             //default message handling for custom commands
             default:
                 if(commandsActive){
@@ -132,31 +101,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
         }
     }
 
-    //method to get a number of players from the player queue
-    private String getPlayers(String num){
-        int number = Integer.parseInt(num);
-        String players = "";
-        
-        //if the queue isn't empty
-        if(!playerQueue.isEmpty()){
-            //if there are fewer players in the queue than the number asked for
-            //set number to size
-            if(playerQueue.size() < number){
-                number = playerQueue.size();
-            }
 
-            for(int i = 0; i < number; i++){
-                String user = playerQueue.pollFirst();
-                players += user + ",";
-                playerQueue.add(user);            
-            }
-        }
-        else {
-            players = "There are no players in the queue!";
-        }
-        
-        return players;
-    }
 
     /**
      * @param messageArray
@@ -324,16 +269,6 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
         }
     }
 
-    /**
-     * This method may not exist at the end since I'm not sure what to do
-     * about music
-     *
-     * @return
-     */
-    private String playlist() {
-        //TODO: Implement this command
-        return "";
-    }
     
     @Override
     public void notify(String message) {
