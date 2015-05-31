@@ -12,7 +12,7 @@ import org.pircbotx.hooks.events.MessageEvent;
  */
 public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
     private boolean queueActive = true;
-    private boolean commandsActive = true;
+    private boolean chatUtilActive = true;
     private boolean pollOpen = false;
     private boolean giveawayOpen = false;
 
@@ -87,7 +87,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 break;
             //polling commands
             case "!createPoll":
-                if(commandsActive) {
+                if(chatUtilActive) {
                     //if (message.getChannel().getOps().contains(message.getUser())) {
                         if (!poll.isEmpty()) {
                             poll.clear();
@@ -111,7 +111,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "closePoll":
-                if(commandsActive) {
+                if(chatUtilActive) {
                     //if (message.getChannel().getOps().contains(message.getUser())) {
                         pollOpen = false;
                         message.respond(poll.toString());
@@ -120,7 +120,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 //}
                 break;
             case "!createGiveaway":
-                if(commandsActive) {
+                if(chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         giveawayOpen = true;
                         giveawayEntries.clear();
@@ -129,7 +129,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!closeGiveaway":
-                if(commandsActive) {
+                if(chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         giveawayOpen = false;
                         message.respond("giveaway closed");
@@ -161,7 +161,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 queueActive = !queueActive;
                 break;
             case "commands":
-                commandsActive = !commandsActive;
+                chatUtilActive = !chatUtilActive;
                 break;
         }
     }
