@@ -27,7 +27,7 @@ public class DatabaseManagement {
         }
     }
 
-    protected String[] getFromDatabase(String command,String channel) {
+    protected String[] getCommandFromDatabase(String command, String channel) {
         String sql = "SELECT response, permission FROM customcommands WHERE command='"+command+"' AND channel='"+channel + "';";
         Connection connect = null;
         Statement stm = null;
@@ -85,13 +85,39 @@ public class DatabaseManagement {
 
         try {
             Class.forName("org.sqlite.JDBC");
+        connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+
+        stm = connect.createStatement();
+        ResultSet set = stm.executeQuery(sql);
+        //answer= set.getMetaData().getColumnCount();
+        while(set.next()){
+            answer.add(set.getString("command"));
+        }
+        stm.close();
+        connect.close();
+    } catch (Exception e) {
+        System.err.println(e.getClass().getName() + ": " + e.getMessage());
+    }
+
+
+        return answer;
+    }
+
+    protected int getQuoteSize() {
+        String sql = "SELECT * FROM quotes";
+        Connection connect = null;
+        Statement stm = null;
+        int answer=0;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
             stm = connect.createStatement();
             ResultSet set = stm.executeQuery(sql);
             //answer= set.getMetaData().getColumnCount();
             while(set.next()){
-                answer.add(set.getString("command"));
+                answer = set.getInt(1);
             }
             stm.close();
             connect.close();
@@ -101,5 +127,30 @@ public class DatabaseManagement {
 
 
         return answer;
+    }
+    protected String[] getQuote(String channel, String index){
+        String sql = "SELECT quote, source FROM quotes WHERE num = '"+ index +"' and channel = '"+ channel+ "';";
+        Connection connect = null;
+        System.out.println(sql);
+        Statement stm = null;
+        String[] answer = new String[2];
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+
+            stm = connect.createStatement();
+            ResultSet set = stm.executeQuery(sql);
+            answer[0] = set.getString("quote");
+            answer[1] = set.getString("source");
+            stm.close();
+            connect.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+
+
+        return answer;
+
     }
 }

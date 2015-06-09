@@ -7,7 +7,7 @@
 package chatbot;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -19,8 +19,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
 
     private final DatabaseManagement manager = new DatabaseManagement();
 
-    
-    private boolean queueActive = true;
+
     private boolean commandsActive = true;
 
     //bot's behavior for messages
@@ -202,7 +201,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
         else {
             //if the command is just to change permissions
             if (messageArray.length < 4) {
-                info = manager.getFromDatabase(command,channel);
+                info = manager.getCommandFromDatabase(command, channel);
                 //if they want to make it mod only
                 if (messageArray[2].equals("-m")) {
                     //if the command is already mod only
@@ -251,7 +250,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
     private void customCommands(MessageEvent message) {
         String command = message.getMessage();
         String[]info;
-        info = manager.getFromDatabase(command,message.getChannel().getName());
+        info = manager.getCommandFromDatabase(command, message.getChannel().getName());
 
         //checks if the command is in custom mod commands
         if (info[1].matches("-m")) {
@@ -272,13 +271,8 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
     
     @Override
     public void notify(String message) {
-        switch (message){
-            case "queue":
-                queueActive = !queueActive;
-                break;
-            case "commands":
+        if(message == "commands"){
                 commandsActive = !commandsActive;
-                break;
         }
     }
 }

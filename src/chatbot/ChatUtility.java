@@ -32,6 +32,16 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
 
         switch (messageArray[0]) {
             //music commands
+            case "!utility":
+                if (message.getChannel().getOps().contains(message.getUser())) {
+                    if (messageArray.length == 2) {
+                        if (messageArray[1].equals("off")) {
+                            chatUtilActive = false;
+                        } else {
+                            chatUtilActive = true;
+                        }
+                    }
+                }
             case "!music":
                 if (messageArray.length == 1)
                     message.respond("the playlist is ...");
@@ -88,7 +98,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
             //polling commands
             case "!createPoll":
                 if(chatUtilActive) {
-                    //if (message.getChannel().getOps().contains(message.getUser())) {
+                    if (message.getChannel().getOps().contains(message.getUser())) {
                         if (!poll.isEmpty()) {
                             poll.clear();
                         }
@@ -99,7 +109,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
 
                     pollOpen = true;
                     }
-                //}
+                }
                 break;
             case "!vote":
                 if(pollOpen){
@@ -112,12 +122,12 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 break;
             case "closePoll":
                 if(chatUtilActive) {
-                    //if (message.getChannel().getOps().contains(message.getUser())) {
+                    if (message.getChannel().getOps().contains(message.getUser())) {
                         pollOpen = false;
                         message.respond(poll.toString());
                         //return the results of the poll
                     }
-                //}
+                }
                 break;
             case "!createGiveaway":
                 if(chatUtilActive) {

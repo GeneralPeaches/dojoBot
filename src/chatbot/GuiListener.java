@@ -40,6 +40,7 @@ public class GuiListener implements ActionListener, GuiPublisher{
                 Commands com = new Commands();
                 SpamControl sc = new SpamControl();
                 ChatUtility cu = new ChatUtility();
+                Quote qu = new Quote();
                 
                 final Configuration configuration = new Configuration.Builder()
                     .setName("dojobot") //Set the nick of the bot.
@@ -47,7 +48,7 @@ public class GuiListener implements ActionListener, GuiPublisher{
                     .setAutoNickChange(false) //Automatically change nick when the current one is in use
                     .setCapEnabled(false) //Enable CAP features
                     .addListener(com) //This class is a listener, so add it to the bots known listeners
-                    .addListener(sc).addListener(cu)
+                    .addListener(sc).addListener(cu).addListener(qu)
                     .setServer("irc.twitch.tv", 6667, "oauth:secret")
                     .addAutoJoinChannel("#" + channel) //Join the slastic channel
                     .buildConfiguration();
