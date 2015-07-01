@@ -36,7 +36,7 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
                 if (messageArray.length==1){
                     //generate random quote
                     Random rnd = new Random();
-                    int rando = rnd.nextInt(manager.getQuoteSize());
+                    int rando = rnd.nextInt(manager.getQuoteSize()-1)+1;
                     quote = manager.getQuote(message.getChannel().getName(),Integer.toString(rando));
                     message.getChannel().send().message("quote #"+rando+ " " +quote[0]+" -"+quote[1]);
                 }else if (messageArray.length==2){
