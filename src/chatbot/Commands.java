@@ -9,6 +9,7 @@ package chatbot;
 import java.util.ArrayList;
 
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
@@ -22,6 +23,12 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
 
     private boolean commandsActive = true;
 
+    public void onConnect(ConnectEvent event) {
+        //event.getBot().sendCAP().request("twitch.tv/tags");
+        event.getBot().sendCAP().request("twitch.tv/membership");
+        event.getBot().sendCAP().request("twitch.tv/commands");
+    }
+    
     //bot's behavior for messages
     @Override
     public void onMessage(MessageEvent message) {
@@ -30,7 +37,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
 
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
-
+        
         switch (messageArray[0]) {
             case "!command":
                 if (message.getChannel().getOps().contains(message.getUser())) {

@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.JTextField;
 import org.pircbotx.Configuration;
+import org.pircbotx.cap.EnableCapHandler;
 
 /**
  *
@@ -46,10 +47,9 @@ public class GuiListener implements ActionListener, GuiPublisher{
                     .setName("dojobot") //Set the nick of the bot.
                     .setLogin("LQ") //login part of hostmask, egdd name:login@host
                     .setAutoNickChange(false) //Automatically change nick when the current one is in use
-                    .setCapEnabled(false) //Enable CAP features
+                    .setServer("irc.twitch.tv", 6667, "oauth:secret")
                     .addListener(com) //This class is a listener, so add it to the bots known listeners
                     .addListener(sc).addListener(cu).addListener(qu)
-                    .setServer("irc.twitch.tv", 6667, "oauth:secret")
                     .addAutoJoinChannel("#" + channel) //Join the slastic channel
                     .buildConfiguration();
 

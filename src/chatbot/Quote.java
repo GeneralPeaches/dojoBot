@@ -47,11 +47,13 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
                 }
                 break;
             case "!quotes":
-                if(messageArray[1].equals("off")){
-                    quotesActive = false;
-                }
-                else if(messageArray[1].equals("on")){
-                    quotesActive = true;
+                if(message.getChannel().getOps().contains(message.getUser())){
+                    if(messageArray[1].equals("off")){
+                        quotesActive = false;
+                    }
+                    else if(messageArray[1].equals("on")){
+                        quotesActive = true;
+                    }
                 }
                 break;
         }

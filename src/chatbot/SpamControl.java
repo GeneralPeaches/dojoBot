@@ -83,7 +83,6 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber {
     }
     
     private String permitUser(String user){
-        //TODO: Implement this commnand to allow sender to post links
         //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
         
         Date endTime = new Date(System.currentTimeMillis() + 180000); 
