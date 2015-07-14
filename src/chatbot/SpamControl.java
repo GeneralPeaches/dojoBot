@@ -10,47 +10,47 @@ import java.util.Date;
 public class SpamControl extends ListenerAdapter implements GuiSubscriber {
     private ArrayList<String> bannablePhrases = new ArrayList<>();
     private HashMap<String,Date> permittedUsers = new HashMap<>();
-    private Boolean off;
+    private boolean filterActive;
+    
     public SpamControl(){
         bannablePhrases = populatePhrases();
-        off = true;
+        filterActive = true;
     }
 
     @Override
-    public void onMessage(MessageEvent message){
+    public void onMessage(MessageEvent message) {
         String currentMessage = message.getMessage();
         
         String[] messageArray = message.getMessage().split(" ");
         
-        if(messageArray[0].equals("!permit")){
-            if(messageArray.length == 2) {
+        if (messageArray[0].equals("!permit")) {
+            if (messageArray.length == 2) {
                 if (message.getChannel().getOps().contains(message.getUser())){
                     message.respond(permitUser(messageArray[1].toLowerCase()));
                 }
             }
         }
 
-        if(messageArray[0].equals("!spam")){
-            if(messageArray.length == 2) {
-                if (message.getChannel().getOps().contains(message.getUser())){
-                    if(messageArray[1].equals("on")){
-                        off = false;
-                        message.respond("spam filter enabled");
-                    }
-                    else if(messageArray[1].equals("off")){
-                        off = true;
+        if (messageArray[0].equals("!spam")) {
+            if (message.getChannel().getOps().contains(message.getUser())) {
+                if (messageArray.length == 2) {
+                    if (messageArray[1].equals("off")) {
+                        filterActive = false;
                         message.respond("spam filter disabled");
                     }
-
+                    if (messageArray[1].equals("on")) {
+                        filterActive = true;
+                        message.respond("spam filter enabled");
+                    }
                 }
             }
         }
 
-        if(!message.getChannel().getOps().contains(message.getUser()) && !off){
-            for(String test : bannablePhrases){
-                if(currentMessage.contains(test)){
+        if (!message.getChannel().getOps().contains(message.getUser()) && filterActive) {
+            for (String test : bannablePhrases) {
+                if (currentMessage.contains(test)) {
                     System.out.println(message.getUser().getNick());
-                    if(!permittedUsers.containsKey(message.getUser().getNick()) || permittedUsers.get(message.getUser().getNick()).before(new Date(System.currentTimeMillis()))){
+                    if (!permittedUsers.containsKey(message.getUser().getNick()) || permittedUsers.get(message.getUser().getNick()).before(new Date(System.currentTimeMillis()))) {
                         purge(message);
                         break;
                     }
@@ -59,13 +59,13 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber {
         }
     }
 
-    private void purge(MessageEvent spamMessage){
+    private void purge(MessageEvent spamMessage) {
         spamMessage.respond("come on now that's not allowed here");
 
         spamMessage.getChannel().send().message("/timeout "+spamMessage.getUser().getNick()+ " 1");
     }
 
-    private ArrayList <String> populatePhrases(){
+    private ArrayList <String> populatePhrases() {
         //method primarily designed for future implementation of reading in a file filled with all things to be timed out, including ascii art, just currently a placeholder for proof of concept
         ArrayList theList = new ArrayList();
         theList.add(".com");
@@ -82,7 +82,7 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber {
         return theList;
     }
     
-    private String permitUser(String user){
+    private String permitUser(String user) {
         //functionality of adding user to data set that is allowed to post links, will need to also be used in the auto chat timeouts implementation
         
         Date endTime = new Date(System.currentTimeMillis() + 180000); 
@@ -93,9 +93,9 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber {
     }
     
     @Override
-    public void notify(String message){
-        if(message.equals("filter")){
-            off = !off;
+    public void notify(String message) {
+        if (message.equals("filter")) {
+            filterActive = !filterActive;
         }
     }
 }

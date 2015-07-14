@@ -9,7 +9,6 @@ package chatbot;
 import java.util.ArrayList;
 
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
@@ -19,15 +18,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class Commands extends ListenerAdapter implements GuiSubscriber {
 
     private final DatabaseManagement manager = new DatabaseManagement();
-
-
     private boolean commandsActive = true;
-
-    public void onConnect(ConnectEvent event) {
-        //event.getBot().sendCAP().request("twitch.tv/tags");
-        event.getBot().sendCAP().request("twitch.tv/membership");
-        event.getBot().sendCAP().request("twitch.tv/commands");
-    }
     
     //bot's behavior for messages
     @Override
@@ -44,7 +35,8 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                     if (messageArray.length == 2) {
                         if (messageArray[1].equals("off")) {
                             commandsActive = false;
-                        } else {
+                        } 
+                        if (messageArray[1].equals("on")) {
                             commandsActive = true;
                         }
                     }
@@ -52,21 +44,22 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
             break;
             //command to make a custom command for the bot
             case "!addcom":
-                if(commandsActive){
+                if (commandsActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         response = addCom(messageArray, message.getChannel().getName());
                         message.getChannel().send().message(response);
-                    } else {
+                    } 
+                    else {
                         message.respond("You are not allowed to add commands.");
                     }
                 }
                 break;
             case "!commands":
-                if(commandsActive){
-                    if(messageArray.length ==1){
+                if (commandsActive) {
+                    if (messageArray.length ==1) {
                         ArrayList<String> commands = manager.getCommands(message.getChannel().getName());
                         String commandList = "The custom commands available to everyone for this channel are: ";
-                        while(!commands.isEmpty()){
+                        while (!commands.isEmpty()) {
                             commandList += commands.remove(0) + ", ";
                         }
                         message.getChannel().send().message(commandList);
@@ -75,22 +68,24 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                 break;
             //command to delete a custom command from the bot
             case "!delcom":
-                if(commandsActive){
+                if (commandsActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         response = delCom(messageArray[1], message.getChannel().getName());
                         message.getChannel().send().message(response);
-                    } else {
+                    } 
+                    else {
                         message.respond("You are not allowed to remove commands.");
                     }
                 }
                 break;
             //command to edit a custom command the bot has
             case "!editcom":
-                if(commandsActive){
+                if (commandsActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         response = editCom(messageArray, message.getChannel().getName());
                         message.getChannel().send().message(response);
-                    } else {
+                    } 
+                    else {
                         message.respond("You are not allowed to edit commands.");
                     }
                 }
@@ -98,7 +93,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
 
             //default message handling for custom commands
             default:
-                if(commandsActive){
+                if (commandsActive) {
                     if (message.getMessage().startsWith("!") && !messageArray[0].equals("!permit")&& !messageArray[0].equals("!spam")) {
                         customCommands(message);
                     }
@@ -214,7 +209,8 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                     //if the command is already mod only
                     if (info[1].matches("-m")) {
                         return ("Command " + command + " is already mod only.");
-                    } else {
+                    } 
+                    else {
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
                         manager.connectToDatabase(statement);
                         //changes the permissions of the command
@@ -226,7 +222,8 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                     //if the command is already available to everyone
                     if (info[1].matches("-e")) {
                         return ("Command " + command + " is already available to everyone.");
-                    } else {
+                    } 
+                    else {
                         //changes the permissions of the command
                         String statement = "UPDATE customcommands SET permission= '" + messageArray[2] + "' WHERE command ='" + command + "' AND channel='" + channel + "';";
                         manager.connectToDatabase(statement);
@@ -263,14 +260,16 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
         if (info[1].matches("-m")) {
             if (message.getChannel().getOps().contains(message.getUser())) {
                 message.getChannel().send().message(info[0]);
-            } else {
+            } 
+            else {
                 message.respond("You're not allowed to use this command.");
             }
         }
         //checks if the command is in the custom commands available to everyone
         else if (info[1].matches("-e")) {
             message.getChannel().send().message(info[0]);
-        } else {
+        } 
+        else {
             message.respond("No such command exists");
         }
     }
@@ -278,7 +277,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
     
     @Override
     public void notify(String message) {
-        if(message == "commands"){
+        if (message.equals("commands")) {
                 commandsActive = !commandsActive;
         }
     }

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.pircbotx.hooks.ListenerAdapter;
 import java.util.HashMap;
 import java.util.Random;
+import org.pircbotx.hooks.events.ConnectEvent;
 
 import org.pircbotx.hooks.events.MessageEvent;
 /**
@@ -23,6 +24,13 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
     Random rnd = new Random();
 
     @Override
+    public void onConnect(ConnectEvent event) {
+        //event.getBot().sendCAP().request("twitch.tv/tags");
+        event.getBot().sendCAP().request("twitch.tv/membership");
+        event.getBot().sendCAP().request("twitch.tv/commands");
+    }
+    
+    @Override
     public void onMessage(MessageEvent message) {
         String newMessage = message.getMessage();
         String response;
@@ -30,18 +38,19 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
         //split the message on spaces to identify the command
         String[] messageArray = newMessage.split(" ");
 
-        switch (messageArray[0]) {
-            //music commands
+        switch (messageArray[0]) { 
             case "!utility":
                 if (message.getChannel().getOps().contains(message.getUser())) {
                     if (messageArray.length == 2) {
                         if (messageArray[1].equals("off")) {
                             chatUtilActive = false;
-                        } else {
+                        } 
+                        if (messageArray[1].equals("on")) {
                             chatUtilActive = true;
                         }
                     }
                 }
+            //music commands
             case "!music":
                 if (messageArray.length == 1)
                     message.respond("the playlist is ...");
@@ -53,15 +62,16 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         if (messageArray[1].equals("off")) {
                             queueActive = false;
-                        } else if (messageArray[1].equals("on")) {
+                        } 
+                        if (messageArray[1].equals("on")) {
                             queueActive = true;
                         }
                     }
                 }
                 break;
             case "!join":
-                if(queueActive){
-                    if(!playerQueue.contains(message.getUser().getNick())){
+                if (queueActive) {
+                    if (!playerQueue.contains(message.getUser().getNick())) {
                         playerQueue.add(message.getUser().getNick());
                         message.respond("You have been added to the queue.");
                     }
@@ -71,7 +81,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!leave":
-                if(queueActive){
+                if (queueActive) {
                     if(!playerQueue.contains(message.getUser().getNick())){
                         message.respond("You aren't in the queue!");
                     }
@@ -82,9 +92,9 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!getPlayers":
-                if(queueActive){
-                    if(message.getChannel().getOps().contains(message.getUser())){
-                        if(messageArray.length < 2){
+                if (queueActive) {
+                    if (message.getChannel().getOps().contains(message.getUser())) {
+                        if (messageArray.length < 2) {
                             message.respond("Please specify a number of players");
                         }
                         response = getPlayers(messageArray[1]);
@@ -97,12 +107,12 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 break;
             //polling commands
             case "!createPoll":
-                if(chatUtilActive) {
+                if (chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         if (!poll.isEmpty()) {
                             poll.clear();
                         }
-                        for(int i = 1; i < messageArray.length; i++){
+                        for (int i = 1; i < messageArray.length; i++) {
                             poll.put(messageArray[i], 0);
                         }
                     message.respond("poll created");
@@ -112,8 +122,8 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!vote":
-                if(pollOpen){
-                    if(poll.containsKey(messageArray[1])){
+                if (pollOpen) {
+                    if (poll.containsKey(messageArray[1])) {
                         poll.replace(messageArray[1],poll.get(messageArray[1]),poll.get(messageArray[1])+1);
                         message.respond("vote accepted");
                     }
@@ -121,7 +131,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "closePoll":
-                if(chatUtilActive) {
+                if (chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         pollOpen = false;
                         message.respond(poll.toString());
@@ -130,7 +140,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!createGiveaway":
-                if(chatUtilActive) {
+                if (chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         giveawayOpen = true;
                         giveawayEntries.clear();
@@ -139,7 +149,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!closeGiveaway":
-                if(chatUtilActive) {
+                if (chatUtilActive) {
                     if (message.getChannel().getOps().contains(message.getUser())) {
                         giveawayOpen = false;
                         message.respond("giveaway closed");
@@ -147,7 +157,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 }
                 break;
             case "!raffle":
-                if(giveawayOpen){
+                if (giveawayOpen) {
                     if (!giveawayEntries.contains(message.getUser().getNick())) {
                         giveawayEntries.add(message.getUser().getNick());
                     }
@@ -165,12 +175,14 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
                 break;
         }
     }
+    
+    @Override
     public void notify(String message) {
         switch (message){
             case "queue":
                 queueActive = !queueActive;
                 break;
-            case "commands":
+            case "utility":
                 chatUtilActive = !chatUtilActive;
                 break;
         }
@@ -181,14 +193,14 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
         String players = "";
 
         //if the queue isn't empty
-        if(!playerQueue.isEmpty()){
+        if (!playerQueue.isEmpty()) {
             //if there are fewer players in the queue than the number asked for
             //set number to size
-            if(playerQueue.size() < number){
+            if (playerQueue.size() < number) {
                 number = playerQueue.size();
             }
 
-            for(int i = 0; i < number; i++){
+            for (int i = 0; i < number; i++) {
                 String user = playerQueue.pollFirst();
                 players += user + ",";
                 playerQueue.add(user);

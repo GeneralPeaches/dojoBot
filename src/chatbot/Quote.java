@@ -14,7 +14,8 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
 
     private final DatabaseManagement manager = new DatabaseManagement();
 
-    public void onMessage(MessageEvent message){
+    @Override
+    public void onMessage(MessageEvent message) {
         String[] messageArray = message.getMessage().split(" ");
         String response;
         String [] quote;
@@ -33,13 +34,14 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
                 message.getChannel().send().message(response);
                 break;
             case "!displayQuote":
-                if (messageArray.length==1){
+                if (messageArray.length==1) {
                     //generate random quote
                     Random rnd = new Random();
                     int rando = rnd.nextInt(manager.getQuoteSize()-1)+1;
                     quote = manager.getQuote(message.getChannel().getName(),Integer.toString(rando));
                     message.getChannel().send().message("quote #"+rando+ " " +quote[0]+" -"+quote[1]);
-                }else if (messageArray.length==2){
+                }
+                else if (messageArray.length==2) {
                     //return specific quote
                     quote = manager.getQuote(message.getChannel().getName(), messageArray[1]);
                     //message.respond(quote[0]+quote[1]);
@@ -47,20 +49,23 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
                 }
                 break;
             case "!quotes":
-                if(message.getChannel().getOps().contains(message.getUser())){
-                    if(messageArray[1].equals("off")){
-                        quotesActive = false;
-                    }
-                    else if(messageArray[1].equals("on")){
-                        quotesActive = true;
+                if (message.getChannel().getOps().contains(message.getUser())) {
+                    if (messageArray.length == 2) {
+                        if (messageArray[1].equals("off")) {
+                            quotesActive = false;
+                        }
+                        if (messageArray[1].equals("on")) {
+                            quotesActive = true;
+                        }
                     }
                 }
                 break;
+            default:
+                break;
         }
-
     }
 
-    private String addQuote(String[] messageArray, String channel){
+    private String addQuote(String[] messageArray, String channel) {
         String output = "";
         output += messageArray[2];
         for (int i = 3; i < messageArray.length; i++) {
@@ -78,7 +83,7 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
 
     }
 
-    private String removeQuote(int index, String channel){
+    private String removeQuote(int index, String channel) {
         String statement = "DELETE FROM quotes WHERE num = '"+ index +"' AND channel = '" + channel +"';";
         manager.connectToDatabase(statement);
         return("Quote "+index+" removed successfully");

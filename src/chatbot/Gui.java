@@ -35,6 +35,9 @@ public class Gui {
 
         JCheckBox queue = new JCheckBox("queue", true);
         queue.addActionListener(listener);
+        
+        JCheckBox utility = new JCheckBox("utility", true);
+        utility.addActionListener(listener);
 
         JCheckBox filter = new JCheckBox("filter");
         filter.addActionListener(listener);
@@ -52,6 +55,7 @@ public class Gui {
         panel.add(connect);
         panel.add(close);
         panel.add(queue);
+        panel.add(utility);
         panel.add(filter);
         panel.add(commands);
         //panel.add(authenticate);
