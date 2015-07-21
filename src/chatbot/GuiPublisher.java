@@ -13,7 +13,7 @@ import java.util.LinkedList;
  */
 public interface GuiPublisher {
     
-    LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    //LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
     
     void broadcast(String message);
     void register(GuiSubscriber sub);

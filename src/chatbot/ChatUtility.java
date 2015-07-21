@@ -11,7 +11,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 /**
  * Created by Slastic on 5/27/2015.
  */
-public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
+public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPublisher {
     private boolean queueActive = true;
     private boolean chatUtilActive = true;
     private boolean pollOpen = false;
@@ -20,9 +20,14 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
     private LinkedList<String> playerQueue = new LinkedList<>();
     private ArrayList<String> giveawayEntries = new ArrayList<>();
     private HashMap<String,Integer> poll = new HashMap<>();
+    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
 
     Random rnd = new Random();
 
+    public ChatUtility(GuiSubscriber sub) {
+        register(sub);
+    }
+    
     @Override
     public void onConnect(ConnectEvent event) {
         //event.getBot().sendCAP().request("twitch.tv/tags");
@@ -216,5 +221,22 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber{
     private String playlist() {
         //TODO: Implement this command
         return "";
+    }
+    
+    @Override
+    public void register(GuiSubscriber sub) {
+        subscribers.add(sub);
+    }
+    
+    @Override
+    public void remove(GuiSubscriber sub) {
+        subscribers.remove(sub);
+    }
+    
+    @Override
+    public void broadcast(String message) {
+        for(GuiSubscriber sub:subscribers) {
+            sub.notify(message);
+        }
     }
 }

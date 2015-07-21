@@ -1,5 +1,6 @@
 package chatbot;
 
+import java.util.LinkedList;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -8,11 +9,16 @@ import java.util.Random;
 /**
  * Created by Slastic on 6/9/2015.
  */
-public class Quote extends ListenerAdapter implements GuiSubscriber {
+public class Quote extends ListenerAdapter implements GuiSubscriber, GuiPublisher {
 
     private boolean quotesActive = true;
+    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
 
     private final DatabaseManagement manager = new DatabaseManagement();
+    
+    public Quote(GuiSubscriber sub) {
+        register(sub);
+    }
 
     @Override
     public void onMessage(MessageEvent message) {
@@ -20,7 +26,7 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
         String response;
         String [] quote;
 
-        switch(messageArray[0]){
+        switch (messageArray[0]) {
             case "!addQuote":
                 response = addQuote(messageArray, message.getChannel().getName());
                 message.getChannel().send().message(response);
@@ -53,9 +59,11 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
                     if (messageArray.length == 2) {
                         if (messageArray[1].equals("off")) {
                             quotesActive = false;
+                            broadcast(messageArray[0] + " " + messageArray[1]);
                         }
                         if (messageArray[1].equals("on")) {
                             quotesActive = true;
+                            broadcast(messageArray[0] + " " + messageArray[1]);
                         }
                     }
                 }
@@ -90,9 +98,27 @@ public class Quote extends ListenerAdapter implements GuiSubscriber {
 
     }
 
+    @Override
     public void notify(String message) {
         if (message.equals("quotes")) {
             quotesActive = !quotesActive;
+        }
+    }
+    
+    @Override
+    public void register(GuiSubscriber sub) {
+        subscribers.add(sub);
+    }
+    
+    @Override
+    public void remove(GuiSubscriber sub) {
+        subscribers.remove(sub);
+    }
+    
+    @Override
+    public void broadcast(String message) {
+        for(GuiSubscriber sub:subscribers) {
+            sub.notify(message);
         }
     }
 }

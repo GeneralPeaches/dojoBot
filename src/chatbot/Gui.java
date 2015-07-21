@@ -8,10 +8,18 @@ import javax.swing.*;
 public class Gui {
     JTextField channelName;
     GuiListener listener;
+    
+    JFrame guiFrame;
+    JCheckBox quote;
+    JCheckBox commands;
+    JCheckBox queue;
+    JCheckBox utility;
+    JCheckBox filter;
+    
 
     public Gui()
     {
-        JFrame guiFrame = new JFrame();
+        guiFrame = new JFrame();
         System.out.println("creating gui");
 
         //make sure the program exits when the frame closes
@@ -24,24 +32,25 @@ public class Gui {
         
         channelName = new JTextField("Type Channel Name", 20);
         
-        listener = new GuiListener(channelName);
+        listener = new GuiListener(channelName, this);
 
         JButton close = new JButton("Close");
         close.addActionListener(listener);
 
-
-        JCheckBox commands = new JCheckBox("commands", true);
+        commands = new JCheckBox("commands", true);
         commands.addActionListener(listener);
 
-        JCheckBox queue = new JCheckBox("queue", true);
+        queue = new JCheckBox("queue", true);
         queue.addActionListener(listener);
         
-        JCheckBox utility = new JCheckBox("utility", true);
+        utility = new JCheckBox("utility", true);
         utility.addActionListener(listener);
 
-        JCheckBox filter = new JCheckBox("filter");
+        filter = new JCheckBox("filter");
         filter.addActionListener(listener);
-
+        
+        quote = new JCheckBox("quote", true);
+        quote.addActionListener(listener);
             
         JButton connect = new JButton("Connect");
         connect.addActionListener(listener);
@@ -56,6 +65,7 @@ public class Gui {
         panel.add(close);
         panel.add(queue);
         panel.add(utility);
+        panel.add(quote);
         panel.add(filter);
         panel.add(commands);
         //panel.add(authenticate);

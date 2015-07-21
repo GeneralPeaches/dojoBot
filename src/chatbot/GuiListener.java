@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.LinkedList;
 import javax.swing.JTextField;
 import org.pircbotx.Configuration;
 import org.pircbotx.cap.EnableCapHandler;
@@ -20,11 +21,15 @@ import org.pircbotx.cap.EnableCapHandler;
  *
  * @author JJ
  */
-public class GuiListener implements ActionListener, GuiPublisher{
+public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
     private JTextField channelName;
+    private Gui gui;
     
-    public GuiListener(JTextField channel){
+    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    
+    public GuiListener(JTextField channel, Gui graphics) {
         channelName = channel;
+        gui = graphics;
     }
     
     @Override
@@ -38,10 +43,10 @@ public class GuiListener implements ActionListener, GuiPublisher{
             case "Connect":
                 String channel = channelName.getText();
                 
-                Commands com = new Commands();
-                SpamControl sc = new SpamControl();
-                ChatUtility cu = new ChatUtility();
-                Quote qu = new Quote();
+                Commands com = new Commands(this);
+                SpamControl sc = new SpamControl(this);
+                ChatUtility cu = new ChatUtility(this);
+                Quote qu = new Quote(this);
                 
                 final Configuration configuration = new Configuration.Builder()
                     .setName("dojobot") //Set the nick of the bot.
@@ -62,6 +67,8 @@ public class GuiListener implements ActionListener, GuiPublisher{
                 
                 register(com);
                 register(sc);
+                register(qu);
+                register(cu);
                 
                 break;
                 /*
@@ -91,19 +98,70 @@ public class GuiListener implements ActionListener, GuiPublisher{
     }
     
     @Override
-    public void register(GuiSubscriber sub){
+    public void register(GuiSubscriber sub) {
         subscribers.add(sub);
     }
     
     @Override
-    public void remove(GuiSubscriber sub){
+    public void remove(GuiSubscriber sub) {
         subscribers.remove(sub);
     }
     
     @Override
-    public void broadcast(String message){
-        for(GuiSubscriber sub:subscribers){
+    public void broadcast(String message) {
+        System.out.println(subscribers);
+        for(GuiSubscriber sub:subscribers) {
             sub.notify(message);
         }
+    }
+    
+    @Override
+    public void notify(String message) {
+        String[] messageArray = message.split(" ");
+        switch (messageArray[0]) {
+            case "!quotes":
+                if (messageArray[1].equals("on")) {
+                    gui.quote.setSelected(true);
+                }
+                else {
+                    gui.quote.setSelected(false);
+                }
+                break;
+            case "!command":
+                if (messageArray[1].equals("on")) {
+                    gui.commands.setSelected(true);
+                }
+                else {
+                    gui.commands.setSelected(false);
+                }
+                break;
+            case "!utility":
+                if (messageArray[1].equals("on")) {
+                    gui.utility.setSelected(true);
+                }
+                else {
+                    gui.utility.setSelected(false);
+                }
+                break;
+            case "!spam":
+                if (messageArray[1].equals("on")) {
+                    gui.filter.setSelected(true);
+                }
+                else {
+                    gui.filter.setSelected(false);
+                }
+                break;
+            case "!queue":
+                if (messageArray[1].equals("on")) {
+                    gui.queue.setSelected(true);
+                }
+                else {
+                    gui.queue.setSelected(false);
+                }
+                break;
+            default:
+                break;
+        }
+        gui.guiFrame.update(gui.guiFrame.getGraphics());
     }
 }

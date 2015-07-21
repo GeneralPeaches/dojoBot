@@ -6,15 +6,19 @@ import org.pircbotx.hooks.events.MessageEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Date;
+import java.util.LinkedList;
 
-public class SpamControl extends ListenerAdapter implements GuiSubscriber {
+public class SpamControl extends ListenerAdapter implements GuiSubscriber, GuiPublisher {
     private ArrayList<String> bannablePhrases = new ArrayList<>();
     private HashMap<String,Date> permittedUsers = new HashMap<>();
     private boolean filterActive;
     
-    public SpamControl(){
+    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    
+    public SpamControl(GuiSubscriber sub){
         bannablePhrases = populatePhrases();
         filterActive = true;
+        register(sub);
     }
 
     @Override
@@ -96,6 +100,23 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber {
     public void notify(String message) {
         if (message.equals("filter")) {
             filterActive = !filterActive;
+        }
+    }
+    
+    @Override
+    public void register(GuiSubscriber sub) {
+        subscribers.add(sub);
+    }
+    
+    @Override
+    public void remove(GuiSubscriber sub) {
+        subscribers.remove(sub);
+    }
+    
+    @Override
+    public void broadcast(String message) {
+        for(GuiSubscriber sub:subscribers) {
+            sub.notify(message);
         }
     }
 }

@@ -7,6 +7,7 @@
 package chatbot;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
@@ -15,10 +16,16 @@ import org.pircbotx.hooks.events.MessageEvent;
  *
  * @author General Peaches and Slastic
  */
-public class Commands extends ListenerAdapter implements GuiSubscriber {
+public class Commands extends ListenerAdapter implements GuiSubscriber, GuiPublisher {
 
     private final DatabaseManagement manager = new DatabaseManagement();
     private boolean commandsActive = true;
+    
+    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    
+    public Commands(GuiSubscriber sub) {
+        register(sub);
+    }
     
     //bot's behavior for messages
     @Override
@@ -101,8 +108,6 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
                 break;
         }
     }
-
-
 
     /**
      * @param messageArray
@@ -273,12 +278,28 @@ public class Commands extends ListenerAdapter implements GuiSubscriber {
             message.respond("No such command exists");
         }
     }
-
     
     @Override
     public void notify(String message) {
         if (message.equals("commands")) {
                 commandsActive = !commandsActive;
+        }
+    }
+    
+    @Override
+    public void register(GuiSubscriber sub) {
+        subscribers.add(sub);
+    }
+    
+    @Override
+    public void remove(GuiSubscriber sub) {
+        subscribers.remove(sub);
+    }
+    
+    @Override
+    public void broadcast(String message) {
+        for(GuiSubscriber sub:subscribers) {
+            sub.notify(message);
         }
     }
 }
