@@ -22,9 +22,11 @@ public class Commands extends ListenerAdapter implements GuiSubscriber, GuiPubli
     private boolean commandsActive = true;
     
     private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    private ArrayList<String> reservedCommands = new ArrayList<>();
     
     public Commands(GuiSubscriber sub) {
         register(sub);
+        init();
     }
     
     //bot's behavior for messages
@@ -125,9 +127,7 @@ public class Commands extends ListenerAdapter implements GuiSubscriber, GuiPubli
         String output = "";
 
         //check that the command isn't one of the precoded ones
-        if (messageArray[2].equals("!addcom") || messageArray[2].equals("!editcom")
-                || messageArray[2].equals("!delcom") || messageArray[2].equals("!permit") || messageArray[2].equals("!music") || messageArray[2].equals("!join") 
-                || messageArray[2].equals("!leave") || messageArray[2].equals("!getPlayers")) {
+        if (reservedCommands.contains(messageArray[1])) {
             return ("Cannot make commands with the same name as default commands");
         }
 
@@ -258,24 +258,27 @@ public class Commands extends ListenerAdapter implements GuiSubscriber, GuiPubli
      */
     private void customCommands(MessageEvent message) {
         String command = message.getMessage();
-        String[]info;
-        info = manager.getCommandFromDatabase(command, message.getChannel().getName());
+        
+        if (!reservedCommands.contains(command)) {
+            String[]info;
+            info = manager.getCommandFromDatabase(command, message.getChannel().getName());
 
-        //checks if the command is in custom mod commands
-        if (info[1].matches("-m")) {
-            if (message.getChannel().getOps().contains(message.getUser())) {
+            //checks if the command is in custom mod commands
+            if (info[1].matches("-m")) {
+                if (message.getChannel().getOps().contains(message.getUser())) {
+                    message.getChannel().send().message(info[0]);
+                } 
+                else {
+                    message.respond("You're not allowed to use this command.");
+                }
+            }
+            //checks if the command is in the custom commands available to everyone
+            else if (info[1].matches("-e")) {
                 message.getChannel().send().message(info[0]);
             } 
             else {
-                message.respond("You're not allowed to use this command.");
+                message.respond("No such command exists");
             }
-        }
-        //checks if the command is in the custom commands available to everyone
-        else if (info[1].matches("-e")) {
-            message.getChannel().send().message(info[0]);
-        } 
-        else {
-            message.respond("No such command exists");
         }
     }
     
@@ -301,5 +304,33 @@ public class Commands extends ListenerAdapter implements GuiSubscriber, GuiPubli
         for(GuiSubscriber sub:subscribers) {
             sub.notify(message);
         }
+    }
+    
+    //horribly inelegant population of reserved command arraylist
+    public void init() {
+        reservedCommands.add("!addCom");
+        reservedCommands.add("!editCom");
+        reservedCommands.add("!delCom");
+        reservedCommands.add("!commands");
+        reservedCommands.add("!command");
+        reservedCommands.add("!utility");
+        reservedCommands.add("!music");
+        reservedCommands.add("!queue");
+        reservedCommands.add("!join");
+        reservedCommands.add("!leave");
+        reservedCommands.add("!getPlayers");
+        reservedCommands.add("!createPoll");
+        reservedCommands.add("!vote");
+        reservedCommands.add("!closePoll");
+        reservedCommands.add("!closeGiveaway");
+        reservedCommands.add("!raffle");
+        reservedCommands.add("!winner");
+        reservedCommands.add("!permit");
+        reservedCommands.add("!spam");
+        reservedCommands.add("!addQuote");
+        reservedCommands.add("!quoting");
+        reservedCommands.add("!removeQuote");
+        reservedCommands.add("!displayQuote");
+        reservedCommands.add("!quotes");
     }
 }
