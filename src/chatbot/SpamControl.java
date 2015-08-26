@@ -17,7 +17,7 @@ public class SpamControl extends ListenerAdapter implements GuiSubscriber, GuiPu
     
     public SpamControl(GuiSubscriber sub){
         bannablePhrases = populatePhrases();
-        filterActive = true;
+        filterActive = false;
         register(sub);
     }
 
