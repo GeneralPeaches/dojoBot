@@ -76,12 +76,23 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPu
                 break;
             case "!join":
                 if (queueActive) {
-                    if (!playerQueue.contains(message.getUser().getNick())) {
-                        playerQueue.add(message.getUser().getNick());
-                        message.respond("You have been added to the queue.");
+                    if (messageArray.length == 2) {
+                        if (!playerQueue.contains(messageArray[1])) {
+                            playerQueue.add(messageArray[1]);
+                            message.respond(messageArray[1] + " has been added to the queue.");
+                        }
+                        else{
+                            message.respond(messageArray[1] + " is already in the queue");
+                        }
                     }
-                    else{
-                        message.respond("You are already in the queue!");
+                    else {
+                        if (!playerQueue.contains(message.getUser().getNick())) {
+                            playerQueue.add(message.getUser().getNick());
+                            message.respond("You have been added to the queue.");
+                        }
+                        else{
+                            message.respond("You are already in the queue!");
+                        }
                     }
                 }
                 break;
@@ -93,6 +104,32 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPu
                     else{
                         playerQueue.remove(message.getUser().getNick());
                         message.respond("You have been removed from the queue");
+                    }
+                }
+                break;
+            case "!remove":
+                if (queueActive) {
+                    if (messageArray.length == 2) {
+                        if (!playerQueue.contains(messageArray[1])){
+                            message.respond(messageArray[1] + " is not in the queue!");
+                        }
+                        else {
+                            playerQueue.remove(messageArray[1]);
+                            message.respond(messageArray[1] + " has been removed from the queue");
+                        }
+                    }
+                    else {
+                        message.respond("Please specify an item to remove from the queue.");
+                    }
+                }
+            case "!get":
+                if (queueActive) {
+                    if (message.getChannel().getOps().contains(message.getUser())) {
+                        response = nextItem();
+                        message.getChannel().send().message(response);
+                    }
+                    else {
+                        message.respond("You are not allowed to get items from the queue.");
                     }
                 }
                 break;
@@ -192,6 +229,17 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPu
                 break;
         }
     }
+    
+    //method to get next element from the queue
+    private String nextItem() {
+        if (!playerQueue.isEmpty()) {
+            return playerQueue.pollFirst();
+        }
+        else {
+            return "Queue is empty.";
+        }
+    }
+    
     //method to get a number of players from the player queue
     private String getPlayers(String num){
         int number = Integer.parseInt(num);
@@ -208,7 +256,6 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPu
             for (int i = 0; i < number; i++) {
                 String user = playerQueue.pollFirst();
                 players += user + ",";
-                playerQueue.add(user);
             }
         }
         else {
