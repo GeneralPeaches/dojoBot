@@ -5,9 +5,10 @@ v 1.02
 Features:
 	- Custom command creation, deletion, and editing by mods and channel owner
 	- Custom command persistence using a database
-	- Basic spam filtering functionality
-		- can now be toggled on and off
-	- Basic Gui with close and connect button
+	- Basic spam filtering for links
+	- Quote system with database persistence
+	- Queue, polling, and giveaway systems.
+	- Simple GUI with checkboxes to toggle various features
 
 TO-DO:
 	- GUI for user friendly bot control
@@ -15,6 +16,4 @@ TO-DO:
 			- Music Player (Last thing)
 	- Potential commands:
 		- music commands
-		- polling commands
 		- stream update commands (title and game)
-		- raffle commands
