@@ -166,7 +166,7 @@ public class ChatUtility extends ListenerAdapter implements GuiSubscriber, GuiPu
             case "!vote":
                 if (pollOpen) {
                     if (poll.containsKey(messageArray[1])) {
-                        poll.replace(messageArray[1],poll.get(messageArray[1]),poll.get(messageArray[1])+1);
+                        poll.put(messageArray[1],poll.get(messageArray[1])+1);
                         message.respond("vote accepted");
                     }
                     //incrememnt choice in the poll
