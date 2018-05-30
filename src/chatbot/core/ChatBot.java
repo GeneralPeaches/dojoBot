@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package chatbot;
+package chatbot.core;
 
 import org.pircbotx.*;
 
@@ -12,17 +12,16 @@ import org.pircbotx.*;
  *
  * @author General Peaches and Slastic
  */
-public class ChatBot extends PircBotX{
-    
-    public ChatBot(Configuration config){
-
+public class ChatBot extends PircBotX
+{
+    public ChatBot(Configuration config)
+    {
         super(config);
-        try {
+        try 
+        {
             this.connect();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
-
 }

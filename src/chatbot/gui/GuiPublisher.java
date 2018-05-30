@@ -3,18 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatbot;
-
-import java.util.LinkedList;
+package chatbot.gui;
 
 /**
- *
  * @author JJ
  */
-public interface GuiPublisher {
-    
-    //LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
-    
+public interface GuiPublisher 
+{   
     void broadcast(String message);
     void register(GuiSubscriber sub);
     void remove(GuiSubscriber sub);

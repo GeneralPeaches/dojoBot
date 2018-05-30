@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package chatbot;
+package chatbot.gui;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -12,36 +12,47 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.swing.JTextField;
 import org.pircbotx.Configuration;
 import org.pircbotx.cap.EnableCapHandler;
 
+import chatbot.chatlistener.ChatUtility;
+import chatbot.chatlistener.Commands;
+import chatbot.chatlistener.Quote;
+import chatbot.chatlistener.SpamControl;
+import chatbot.core.ChatBot;
+
 /**
  *
  * @author JJ
  */
-public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
-    private JTextField channelName;
-    private Gui gui;
+public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber
+{
+    private JTextField _channelName;
+    private Gui _gui;
     
-    private LinkedList<GuiSubscriber> subscribers = new LinkedList<>();
+    private ArrayList<GuiSubscriber> _subscribers = new ArrayList<>();
     
-    public GuiListener(JTextField channel, Gui graphics) {
-        channelName = channel;
-        gui = graphics;
+    public GuiListener(JTextField channel, Gui graphics) 
+    {
+        _channelName = channel;
+        _gui = graphics;
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) 
+    {
         String command = e.getActionCommand();
         
-        switch (command){
+        switch (command)
+        {
             case "Close":
                 System.exit(0);
                 break;
             case "Connect":
-                String channel = channelName.getText();
+                String channel = _channelName.getText();
                 
                 Commands com = new Commands(this);
                 SpamControl sc = new SpamControl(this);
@@ -58,8 +69,10 @@ public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
                     .addAutoJoinChannel("#" + channel) //Join the slastic channel
                     .buildConfiguration();
 
-                Thread botThread = new Thread(){
-                    public void run(){
+                Thread botThread = new Thread()
+                {
+                    public void run()
+                    {
                         new ChatBot(configuration);
                     }
                 };
@@ -71,11 +84,12 @@ public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
                 register(cu);
                 
                 break;
-                /*
+                
             case "Authenticate":
                 URI site = null;
                 
-                try {
+                try 
+                {
                     site = new URI("www.google.com");
                 } catch(URISyntaxException s) {
                     
@@ -83,14 +97,15 @@ public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
                 
                 Desktop window = Desktop.getDesktop();
                 
-                try{
+                try
+                {
                     window.browse(site);
                 } catch (IOException i){
                     
                 }
                 
                 
-                break;*/
+                break;
             default:
                 broadcast(command);
                 break;
@@ -98,70 +113,86 @@ public class GuiListener implements ActionListener, GuiPublisher, GuiSubscriber{
     }
     
     @Override
-    public void register(GuiSubscriber sub) {
-        subscribers.add(sub);
+    public void register(GuiSubscriber sub) 
+    {
+        _subscribers.add(sub);
     }
     
     @Override
-    public void remove(GuiSubscriber sub) {
-        subscribers.remove(sub);
+    public void remove(GuiSubscriber sub) 
+    {
+        _subscribers.remove(sub);
     }
     
     @Override
-    public void broadcast(String message) {
-        System.out.println(subscribers);
-        for(GuiSubscriber sub:subscribers) {
+    public void broadcast(String message) 
+    {
+        System.out.println(_subscribers);
+        for(GuiSubscriber sub:_subscribers) 
+        {
             sub.notify(message);
         }
     }
     
     @Override
-    public void notify(String message) {
+    public void notify(String message) 
+    {
         String[] messageArray = message.split(" ");
-        switch (messageArray[0]) {
+        switch (messageArray[0]) 
+        {
             case "!quotes":
-                if (messageArray[1].equals("on")) {
-                    gui.quote.setSelected(true);
+                if (messageArray[1].equals("on")) 
+                {
+                    _gui._quote.setSelected(true);
                 }
-                else {
-                    gui.quote.setSelected(false);
+                else 
+                {
+                    _gui._quote.setSelected(false);
                 }
                 break;
             case "!command":
-                if (messageArray[1].equals("on")) {
-                    gui.commands.setSelected(true);
+                if (messageArray[1].equals("on")) 
+                {
+                    _gui._commands.setSelected(true);
                 }
-                else {
-                    gui.commands.setSelected(false);
+                else 
+                {
+                    _gui._commands.setSelected(false);
                 }
                 break;
             case "!utility":
-                if (messageArray[1].equals("on")) {
-                    gui.utility.setSelected(true);
+                if (messageArray[1].equals("on")) 
+                {
+                    _gui._utility.setSelected(true);
                 }
-                else {
-                    gui.utility.setSelected(false);
+                else 
+                {
+                    _gui._utility.setSelected(false);
                 }
                 break;
             case "!spam":
-                if (messageArray[1].equals("on")) {
-                    gui.filter.setSelected(true);
+                if (messageArray[1].equals("on")) 
+                {
+                    _gui._filter.setSelected(true);
                 }
-                else {
-                    gui.filter.setSelected(false);
+                else 
+                {
+                    _gui._filter.setSelected(false);
                 }
                 break;
             case "!queue":
-                if (messageArray[1].equals("on")) {
-                    gui.queue.setSelected(true);
+                if (messageArray[1].equals("on")) 
+                {
+                    _gui._queue.setSelected(true);
                 }
-                else {
-                    gui.queue.setSelected(false);
+                else 
+                {
+                    _gui._queue.setSelected(false);
                 }
                 break;
             default:
                 break;
         }
-        gui.guiFrame.update(gui.guiFrame.getGraphics());
+        _gui._guiFrame.update(_gui._guiFrame.getGraphics());
     }
 }

@@ -1,4 +1,4 @@
-package chatbot;
+package chatbot.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,12 +9,15 @@ import java.util.ArrayList;
 /**
  * Created by slastic on 2/12/2015.
  */
-public class DatabaseManagement {
+public class DatabaseManagement 
+{
 
-    protected void connectToDatabase(String sql) {
+    public void connectToDatabase(String sql) 
+    {
         Connection connect = null;
         Statement stm = null;
-        try {
+        try 
+        {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
@@ -27,13 +30,16 @@ public class DatabaseManagement {
         }
     }
 
-    protected String[] getCommandFromDatabase(String command, String channel) {
+    //This is going to be changed to remove the channel aspect of the command
+    public String[] getCommandFromDatabase(String command, String channel) 
+    {
         String sql = "SELECT response, permission FROM customcommands WHERE command='"+command+"' AND channel='"+channel + "';";
         Connection connect = null;
         Statement stm = null;
         String[] answer= new String[2];
 
-        try {
+        try 
+        {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
@@ -47,24 +53,26 @@ public class DatabaseManagement {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
-
         return answer;
     }
 
-    protected int getDatabaseSize() {
+    public int getDatabaseSize() 
+    {
         String sql = "SELECT * FROM customcommands";
         Connection connect = null;
         Statement stm = null;
-        int answer=0;
+        int answer = 0;
 
-        try {
+        try 
+        {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
             stm = connect.createStatement();
             ResultSet set = stm.executeQuery(sql);
             //answer= set.getMetaData().getColumnCount();
-            while(set.next()){
+            while(set.next())
+            {
                 answer = set.getInt(1);
             }
             stm.close();
@@ -73,50 +81,55 @@ public class DatabaseManagement {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
-
         return answer;
     }
 
-    protected ArrayList getCommands(String channelName) {
+    public ArrayList getCommands(String channelName) 
+    {
         String sql = "SELECT * FROM customcommands WHERE permission = '-e' AND channel='"+channelName+"' order by COMMAND ASC;";
         Connection connect = null;
         Statement stm = null;
         ArrayList<String> answer = new ArrayList<String>();
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-        connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
-
-        stm = connect.createStatement();
-        ResultSet set = stm.executeQuery(sql);
-        //answer= set.getMetaData().getColumnCount();
-        while(set.next()){
-            answer.add(set.getString("command"));
-        }
-        stm.close();
-        connect.close();
-    } catch (Exception e) {
-        System.err.println(e.getClass().getName() + ": " + e.getMessage());
-    }
-
-
-        return answer;
-    }
-
-    protected int getQuoteSize() {
-        String sql = "SELECT * FROM quotes";
-        Connection connect = null;
-        Statement stm = null;
-        int answer=0;
-
-        try {
+        try 
+        {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
             stm = connect.createStatement();
             ResultSet set = stm.executeQuery(sql);
             //answer= set.getMetaData().getColumnCount();
-            while(set.next()){
+            while(set.next())
+            {
+            	answer.add(set.getString("command"));
+            }
+            stm.close();
+            connect.close();
+        } catch (Exception e) {
+        	System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
+
+
+        return answer;
+    }
+
+    public int getQuoteSize() 
+    {
+        String sql = "SELECT * FROM quotes";
+        Connection connect = null;
+        Statement stm = null;
+        int answer = 0;
+
+        try 
+        {
+            Class.forName("org.sqlite.JDBC");
+            connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
+
+            stm = connect.createStatement();
+            ResultSet set = stm.executeQuery(sql);
+            //answer= set.getMetaData().getColumnCount();
+            while(set.next())
+            {
                 answer = set.getInt(1);
             }
             stm.close();
@@ -125,17 +138,19 @@ public class DatabaseManagement {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
 
-
         return answer;
     }
-    protected String[] getQuote(String channel, String index){
+    
+    public String[] getQuote(String channel, String index)
+    {
         String sql = "SELECT quote, source FROM quotes WHERE num = '"+ index +"' and channel = '"+ channel+ "';";
         Connection connect = null;
         System.out.println(sql);
         Statement stm = null;
         String[] answer = new String[2];
 
-        try {
+        try 
+        {
             Class.forName("org.sqlite.JDBC");
             connect = DriverManager.getConnection("jdbc:sqlite:commands.db");
 
@@ -148,9 +163,7 @@ public class DatabaseManagement {
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-
-
+        
         return answer;
-
     }
 }

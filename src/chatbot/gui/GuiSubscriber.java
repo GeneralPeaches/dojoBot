@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatbot;
+package chatbot.gui;
 
 /**
- *
  * @author JJ
  */
-public interface GuiSubscriber {
+public interface GuiSubscriber 
+{
     void notify(String message);
 }
